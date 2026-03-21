@@ -34,8 +34,6 @@ const { cards } = Astro.props;
       continue;
     }
 
-    let position = 0;
-    let minPosition = 0;
     let velocity = 0;
     let lastFrame = 0;
     let isDragging = false;
@@ -44,16 +42,6 @@ const { cards } = Astro.props;
     let lastPointerTime = 0;
     let draggedDistance = 0;
     let suppressClick = false;
-
-    const render = () => {
-      track.style.transform = `translate3d(${position}px, 0, 0)`;
-    };
-
-    const measure = () => {
-      minPosition = Math.min(0, viewport.clientWidth - track.scrollWidth);
-      position = Math.max(minPosition, Math.min(0, position));
-      render();
-    };
 
     const animate = (timestamp: number) => {
       if (!lastFrame) {
@@ -65,27 +53,18 @@ const { cards } = Astro.props;
 
       if (!isDragging) {
         if (Math.abs(velocity) > 1) {
-          position += velocity * deltaSeconds;
+          viewport.scrollLeft -= velocity * deltaSeconds;
           velocity *= Math.pow(0.92, deltaSeconds * 60);
-        }
 
-        if (position > 0) {
-          velocity = 0;
-          position += (0 - position) * 0.18;
+          const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
 
-          if (Math.abs(position) < 0.5) {
-            position = 0;
-          }
-        } else if (position < minPosition) {
-          velocity = 0;
-          position += (minPosition - position) * 0.18;
-
-          if (Math.abs(minPosition - position) < 0.5) {
-            position = minPosition;
+          if (
+            (viewport.scrollLeft <= 0 && velocity > 0) ||
+            (viewport.scrollLeft >= maxScrollLeft && velocity < 0)
+          ) {
+            velocity = 0;
           }
         }
-
-        render();
       }
 
       window.requestAnimationFrame(animate);
@@ -141,13 +120,9 @@ const { cards } = Astro.props;
       lastPointerX = event.clientX;
       lastPointerTime = now;
       draggedDistance += Math.abs(deltaX);
-
-      const isPastLeadingEdge = position >= 0 && deltaX > 0;
-      const isPastTrailingEdge = position <= minPosition && deltaX < 0;
-
-      position += isPastLeadingEdge || isPastTrailingEdge ? deltaX * 0.35 : deltaX;
       velocity = (deltaX / deltaMs) * 1000;
-      render();
+      viewport.scrollLeft -= deltaX;
+      event.preventDefault();
     });
 
     viewport.addEventListener("pointerup", endDrag);
@@ -166,10 +141,13 @@ const { cards } = Astro.props;
       true
     );
 
-    const resizeObserver = new ResizeObserver(measure);
+    const resizeObserver = new ResizeObserver(() => {
+      const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+      viewport.scrollLeft = Math.min(viewport.scrollLeft, maxScrollLeft);
+    });
+
     resizeObserver.observe(viewport);
     resizeObserver.observe(track);
     window.requestAnimationFrame(animate);
-    measure();
   }
 </script>
