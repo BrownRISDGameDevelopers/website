@@ -1,0 +1,175 @@
+---
+import GameCard from "./GameCard.astro";
+
+interface Card {
+  image: string;
+  imageAlt: string;
+  season: string;
+  href?: string;
+}
+
+interface Props {
+  cards: Card[];
+}
+
+const { cards } = Astro.props;
+---
+
+<section id="games" class="games-marquee" aria-label="Featured games" data-node-id="5:3132" data-games-marquee>
+  <div class="games-marquee__viewport" data-games-viewport>
+    <div class="games-marquee__track" data-games-track>
+      {cards.map((card) => <GameCard {...card} />)}
+    </div>
+  </div>
+</section>
+
+<script>
+  const marquees = document.querySelectorAll("[data-games-marquee]");
+
+  for (const marquee of marquees) {
+    const viewport = marquee.querySelector("[data-games-viewport]");
+    const track = marquee.querySelector("[data-games-track]");
+
+    if (!(viewport instanceof HTMLElement) || !(track instanceof HTMLElement)) {
+      continue;
+    }
+
+    let position = 0;
+    let minPosition = 0;
+    let velocity = 0;
+    let lastFrame = 0;
+    let isDragging = false;
+    let activePointerId: number | null = null;
+    let lastPointerX = 0;
+    let lastPointerTime = 0;
+    let draggedDistance = 0;
+    let suppressClick = false;
+
+    const render = () => {
+      track.style.transform = `translate3d(${position}px, 0, 0)`;
+    };
+
+    const measure = () => {
+      minPosition = Math.min(0, viewport.clientWidth - track.scrollWidth);
+      position = Math.max(minPosition, Math.min(0, position));
+      render();
+    };
+
+    const animate = (timestamp: number) => {
+      if (!lastFrame) {
+        lastFrame = timestamp;
+      }
+
+      const deltaSeconds = (timestamp - lastFrame) / 1000;
+      lastFrame = timestamp;
+
+      if (!isDragging) {
+        if (Math.abs(velocity) > 1) {
+          position += velocity * deltaSeconds;
+          velocity *= Math.pow(0.92, deltaSeconds * 60);
+        }
+
+        if (position > 0) {
+          velocity = 0;
+          position += (0 - position) * 0.18;
+
+          if (Math.abs(position) < 0.5) {
+            position = 0;
+          }
+        } else if (position < minPosition) {
+          velocity = 0;
+          position += (minPosition - position) * 0.18;
+
+          if (Math.abs(minPosition - position) < 0.5) {
+            position = minPosition;
+          }
+        }
+
+        render();
+      }
+
+      window.requestAnimationFrame(animate);
+    };
+
+    const endDrag = (event: PointerEvent) => {
+      if (!isDragging || event.pointerId !== activePointerId) {
+        return;
+      }
+
+      if (viewport.hasPointerCapture(event.pointerId)) {
+        viewport.releasePointerCapture(event.pointerId);
+      }
+
+      isDragging = false;
+      activePointerId = null;
+      lastPointerTime = 0;
+      viewport.classList.remove("is-dragging");
+
+      if (draggedDistance > 6) {
+        suppressClick = true;
+
+        window.setTimeout(() => {
+          suppressClick = false;
+        }, 0);
+      }
+    };
+
+    viewport.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+
+      isDragging = true;
+      velocity = 0;
+      activePointerId = event.pointerId;
+      lastPointerX = event.clientX;
+      lastPointerTime = performance.now();
+      draggedDistance = 0;
+      lastFrame = 0;
+      viewport.classList.add("is-dragging");
+      viewport.setPointerCapture(event.pointerId);
+    });
+
+    viewport.addEventListener("pointermove", (event) => {
+      if (!isDragging || event.pointerId !== activePointerId) {
+        return;
+      }
+
+      const now = performance.now();
+      const deltaX = event.clientX - lastPointerX;
+      const deltaMs = Math.max(16, now - lastPointerTime);
+      lastPointerX = event.clientX;
+      lastPointerTime = now;
+      draggedDistance += Math.abs(deltaX);
+
+      const isPastLeadingEdge = position >= 0 && deltaX > 0;
+      const isPastTrailingEdge = position <= minPosition && deltaX < 0;
+
+      position += isPastLeadingEdge || isPastTrailingEdge ? deltaX * 0.35 : deltaX;
+      velocity = (deltaX / deltaMs) * 1000;
+      render();
+    });
+
+    viewport.addEventListener("pointerup", endDrag);
+    viewport.addEventListener("pointercancel", endDrag);
+
+    marquee.addEventListener(
+      "click",
+      (event) => {
+        if (!suppressClick) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+      },
+      true
+    );
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(track);
+    window.requestAnimationFrame(animate);
+    measure();
+  }
+</script>

@@ -1,5 +1,5 @@
 ---
-import GameCard from "../components/GameCard.astro";
+import GamesMarquee from "../components/GamesMarquee.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const discordIcon = "https://cdn.simpleicons.org/discord/white";
@@ -26,6 +26,7 @@ const cards = Array.from({ length: 4 }, () => ({
             alt="Brown RISD Game Developers logo"
             width="56"
             height="64"
+            draggable="false"
             loading="eager"
           />
         </a>
@@ -49,7 +50,7 @@ const cards = Array.from({ length: 4 }, () => ({
             href="https://discord.gg/dhrKyse6RH"
             aria-label="Discord"
           >
-            <img class="site-nav__social-icon" src={discordIcon} alt="" width="24" height="24" loading="eager" />
+            <img class="site-nav__social-icon" src={discordIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
           </a>
 
           <a
@@ -57,7 +58,7 @@ const cards = Array.from({ length: 4 }, () => ({
             href="https://www.instagram.com/brownrisdgamedev/"
             aria-label="Instagram"
           >
-            <img class="site-nav__social-icon" src={instagramIcon} alt="" width="24" height="24" loading="eager" />
+            <img class="site-nav__social-icon" src={instagramIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
           </a>
         </div>
       </div>
@@ -74,8 +75,6 @@ const cards = Array.from({ length: 4 }, () => ({
       </p>
     </section>
 
-    <section id="games" class="games-strip" aria-label="Featured games" data-node-id="5:3132">
-      {cards.map((card) => <GameCard {...card} />)}
-    </section>
+    <GamesMarquee cards={cards} />
   </main>
 </BaseLayout>

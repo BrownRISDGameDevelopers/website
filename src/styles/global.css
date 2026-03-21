@@ -33,6 +33,8 @@ a {
 img {
   display: block;
   max-width: 100%;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .site-shell {
@@ -180,10 +182,28 @@ img {
   font-weight: 400;
 }
 
-.games-strip {
-  width: max-content;
+.games-marquee {
+  width: calc(100% + 64px);
+  align-self: flex-start;
+}
+
+.games-marquee__viewport {
+  width: 100%;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.games-marquee__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.games-marquee__track {
   display: flex;
   gap: 24px;
+  width: max-content;
+  will-change: transform;
 }
 
 .game-card {
@@ -279,20 +299,18 @@ img {
     gap: 24px;
   }
 
+  .hero {
+    width: min(537px, 100%);
+  }
+
   .site-nav__right,
   .site-nav__links {
     gap: 24px 32px;
     justify-content: flex-start;
   }
 
-  .hero {
-    width: min(537px, 100%);
-  }
-
-  .games-strip {
+  .games-marquee {
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 12px;
   }
 }
 
