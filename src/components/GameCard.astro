@@ -1,0 +1,32 @@
+---
+interface Props {
+  image: string;
+  imageAlt: string;
+  season: string;
+  href?: string;
+}
+
+const {
+  image,
+  imageAlt,
+  season,
+  href = "#"
+} = Astro.props;
+---
+
+<article class="game-card">
+  <div class="game-card__art">
+    <img src={image} alt={imageAlt} width="391" height="220" loading="eager" />
+  </div>
+
+  <div class="game-card__body">
+    <h2 class="game-card__title">
+      <span>PICKLEBALL</span>
+      <span>VIOLENCE</span>
+    </h2>
+
+    <p class="game-card__season">{season}</p>
+
+    <a class="game-card__cta" href={href}>PLAY NOW</a>
+  </div>
+</article>

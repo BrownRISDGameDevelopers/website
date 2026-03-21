@@ -1,0 +1,81 @@
+---
+import GameCard from "../components/GameCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const discordIcon = "https://cdn.simpleicons.org/discord/white";
+const instagramIcon = "https://cdn.simpleicons.org/instagram/white";
+
+const cards = Array.from({ length: 4 }, () => ({
+  image: "/assets/pickleball-violence.png",
+  imageAlt: "Pickleball Violence game artwork",
+  season: "FALL 2025",
+  href: "#"
+}));
+---
+
+<BaseLayout
+  title="Brown RISD Game Developers"
+  description="Brown RISD Game Developers is an indie game studio focused on collaborative, student-led game projects."
+>
+  <main class="landing-page" data-node-id="5:62">
+    <header class="site-nav" data-node-id="5:2351">
+      <div class="site-nav__left" data-node-id="5:3095">
+        <a class="site-nav__brand" href="/" aria-label="Brown RISD Game Developers home">
+          <img
+            src="/assets/brgd-logo-white.png"
+            alt="Brown RISD Game Developers logo"
+            width="56"
+            height="64"
+            loading="eager"
+          />
+        </a>
+
+        <nav class="site-nav__links site-nav__links--primary" aria-label="Primary">
+          <a href="https://brownrisdgames.itch.io/">GAMES</a>
+          <a href="https://brgd.bandcamp.com/">SOUNDTRACKS</a>
+        </nav>
+      </div>
+
+      <div class="site-nav__right">
+        <nav class="site-nav__links site-nav__links--secondary" aria-label="Secondary">
+          <a href="https://docs.brownrisd.games/">CLUB DOCUMENTATION</a>
+          <a href="#team">TEAM</a>
+          <a href="#join">JOIN US!</a>
+        </nav>
+
+        <div class="site-nav__social">
+          <a
+            class="site-nav__social-link site-nav__social-link--discord"
+            href="https://discord.gg/dhrKyse6RH"
+            aria-label="Discord"
+          >
+            <img class="site-nav__social-icon" src={discordIcon} alt="" width="24" height="24" loading="eager" />
+          </a>
+
+          <a
+            class="site-nav__social-link site-nav__social-link--instagram"
+            href="https://www.instagram.com/brownrisdgamedev/"
+            aria-label="Instagram"
+          >
+            <img class="site-nav__social-icon" src={instagramIcon} alt="" width="24" height="24" loading="eager" />
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title" data-node-id="5:3224">
+      <h1 id="hero-title" class="hero__title" data-node-id="5:3225">
+        <span>BROWN RISD</span>
+        <span>GAME DEVELOPERS</span>
+      </h1>
+
+      <p class="hero__copy" data-node-id="5:3226">
+        We’re an indie game studio focused on creating collaborative, student-led game projects.
+      </p>
+    </section>
+
+    <section id="games" class="games-strip" aria-label="Featured games" data-node-id="5:3132">
+      {cards.map((card) => <GameCard {...card} />)}
+    </section>
+  </main>
+</BaseLayout>
