@@ -38,7 +38,7 @@ interface MarqueeGame {
 const ITCH_GAMES_URL = 'https://itch.io/api/1/key/my-games';
 const FALLBACK_IMAGE = '/assets/pickleball-violence.png';
 const CACHE_TTL_SECONDS = 60 * 60;
-const CACHE_VERSION = 'created-at-v6';
+const CACHE_VERSION = 'created-at-v7';
 const MINIMUM_VIEWS_COUNT = 100;
 const ALLOWED_ITCH_USERNAMES = new Set(['brownrisdgames', 'brgd']);
 const cloudflareCaches = caches as CacheStorage & { default: Cache };
@@ -93,8 +93,16 @@ const formatAcademicSeason = (game: ItchApiGame) => {
 		return 'ITCH.IO';
 	}
 
-	const season = parsedTimestamp.month >= 7 ? 'FALL' : 'SPRING';
-	return `${season} ${parsedTimestamp.year}`;
+	if (parsedTimestamp.month >= 3 && parsedTimestamp.month <= 8) {
+		return `SPRING ${parsedTimestamp.year}`;
+	}
+
+	const fallYear =
+		parsedTimestamp.month >= 9
+			? parsedTimestamp.year
+			: parsedTimestamp.year - 1;
+
+	return `FALL ${fallYear}`;
 };
 
 const normalizeGame = (game: ItchApiGame): MarqueeGame => ({
