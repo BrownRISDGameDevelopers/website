@@ -21,6 +21,7 @@ pnpm-debug.log*
 # cloudflare pages
 .dev.vars*
 .wrangler
+!.dev.vars.example
 
 # macOS-specific files
 .DS_Store
