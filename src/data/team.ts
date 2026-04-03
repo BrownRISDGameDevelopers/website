@@ -132,6 +132,7 @@ const sortMembers = (left: TeamMember, right: TeamMember) =>
   left.grad - right.grad || left.name.localeCompare(right.name);
 
 const allMembers = Object.entries(memberModules)
+  .filter(([path]) => !path.endsWith("/template.md"))
   .map(([path, { frontmatter }]) => ({
     bio: extractMemberBio(rawMemberModules[path] ?? ""),
     displayName: formatDisplayName(frontmatter.name, frontmatter.grad),

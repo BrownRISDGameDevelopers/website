@@ -12,27 +12,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="Meet the developers, designers, producers and sound engineers behind Brown RISD Game Developers."
 >
   <main
-    class="relative min-h-screen w-full px-16 py-8 max-[1180px]:px-5 max-[1180px]:pt-6 max-[1180px]:pb-10"
+    class="relative min-h-screen w-full px-16 py-8 max-[1180px]:px-5 max-[1180px]:pt-6 max-[1180px]:pb-10 max-[720px]:px-5 max-[720px]:pt-4 max-[720px]:pb-8"
     data-node-id="18:1804"
   >
-    <div class="flex min-h-[calc(100vh-4rem)] flex-col gap-12 max-[1180px]:min-h-0">
+    <div class="flex min-h-[calc(100vh-4rem)] flex-col gap-12 max-[1180px]:min-h-0 max-[720px]:gap-8">
       <SiteNav />
 
       <section
-        class="flex max-w-[537px] flex-col gap-4 text-white"
+        class="flex max-w-[537px] flex-col gap-4 text-white max-[720px]:max-w-none max-[720px]:gap-3"
         aria-labelledby="team-title"
         data-node-id="18:1825"
       >
         <h1
           id="team-title"
-          class="m-0 text-5xl/[1.3] font-bold uppercase max-[720px]:text-[40px] max-[720px]:leading-[52px]"
+          class="m-0 text-5xl/[1.3] font-bold uppercase max-[720px]:text-[32px] max-[720px]:leading-[1.15] max-[420px]:text-[28px]"
           data-node-id="18:1826"
         >
           TEAM
         </h1>
 
         <p
-          class="m-0 text-2xl/[1.3] font-normal max-[720px]:text-xl max-[720px]:leading-7"
+          class="m-0 text-2xl/[1.3] font-normal max-[720px]:text-lg max-[720px]:leading-6 max-[420px]:text-base max-[420px]:leading-6"
           data-node-id="18:1827"
         >
           Meet the developers, designers, producers and sound engineers who turn our ideas into
@@ -40,10 +40,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </p>
       </section>
 
-      <section class="flex flex-col gap-10" aria-label="Team roster">
+      <section class="flex flex-col gap-10 max-[720px]:gap-8" aria-label="Team roster">
         <details class="group w-full border border-white" data-node-id="18:1828" open>
           <summary
-            class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:text-xl"
+            class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:gap-4 max-[720px]:px-3 max-[720px]:py-3 max-[720px]:pr-4 max-[720px]:text-lg max-[420px]:text-base"
             data-node-id="18:1829"
           >
             <span data-node-id="18:1830">CURRENT MEMBERS</span>
@@ -56,7 +56,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </summary>
 
           <ul
-            class="m-0 flex list-none flex-col gap-1 overflow-x-hidden border-t border-white p-4"
+            class="m-0 flex list-none flex-col gap-1 overflow-x-hidden border-t border-white p-4 max-[720px]:gap-3 max-[720px]:p-3"
             data-node-id="18:1103"
           >
             {currentMembers.map((member) => (
@@ -66,8 +66,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </details>
 
         {alumniClasses.length > 0 && (
-          <div class="flex flex-col gap-10">
-            <h2 class="m-0 text-4xl font-bold uppercase leading-[1.3] max-[720px]:text-[32px]">
+          <div class="flex flex-col gap-10 max-[720px]:gap-8">
+            <h2 class="m-0 text-4xl font-bold uppercase leading-[1.3] max-[720px]:text-[28px]">
               ALUMNI
             </h2>
 
@@ -79,7 +79,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                     index < alumniClasses.length - 1 && "border-b border-white"
                   ]}
                 >
-                  <summary class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:text-xl">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:gap-4 max-[720px]:px-3 max-[720px]:py-3 max-[720px]:pr-4 max-[720px]:text-lg max-[420px]:text-base">
                     <span>{alumniClass.label}</span>
 
                     <ChevronDown
@@ -89,7 +89,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                     />
                   </summary>
 
-                  <ul class="m-0 flex list-none flex-col gap-1 border-t border-white p-4">
+                  <ul class="m-0 flex list-none flex-col gap-1 border-t border-white p-4 max-[720px]:gap-3 max-[720px]:p-3">
                     {alumniClass.members.map((member) => (
                       <TeamMemberRow {...member} />
                     ))}

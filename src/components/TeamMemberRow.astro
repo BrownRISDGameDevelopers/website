@@ -33,7 +33,7 @@ const triggerPayload = JSON.stringify({
   school
 });
 
-const schoolLabelClass = "self-start text-sm leading-normal font-semibold";
+const schoolLabelClass = "self-start text-sm leading-normal font-semibold max-[720px]:text-xs";
 const brownClass = "text-[#d3c1bb]";
 const risdClass = "text-[#dfddff]";
 ---
@@ -41,11 +41,11 @@ const risdClass = "text-[#dfddff]";
 <li class="w-full">
   <button
     type="button"
-    class="flex w-full cursor-pointer items-end gap-3 border-0 bg-transparent p-0 text-left text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 max-[900px]:items-start max-[900px]:justify-between"
+    class="flex w-full cursor-pointer items-end gap-3 border-0 bg-transparent p-0 text-left text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 max-[720px]:flex-col max-[720px]:items-start max-[720px]:gap-0.5"
     data-team-member-trigger
     data-team-member={triggerPayload}
   >
-    <span class="flex min-w-0 items-start gap-3">
+    <span class="flex min-w-0 items-start gap-3 max-[720px]:flex-wrap max-[720px]:gap-x-2 max-[720px]:gap-y-1">
       <span class="min-w-0 text-[20px] leading-normal max-[720px]:text-lg">
         {displayName}
       </span>
@@ -60,10 +60,10 @@ const risdClass = "text-[#dfddff]";
       }
     </span>
     <span
-      class="dot-leader-column min-w-0 flex-1 self-end overflow-hidden text-white/90"
+      class="dot-leader-column min-w-0 flex-1 self-end overflow-hidden text-white/90 max-[720px]:hidden"
       aria-hidden="true"
     ></span>
-    <span class="shrink-0 self-start text-[20px] leading-normal max-[720px]:text-lg max-[900px]:pl-3">
+    <span class="shrink-0 self-start text-[20px] leading-normal max-[720px]:pl-0 max-[720px]:text-base max-[720px]:text-white/80">
       {role}
     </span>
   </button>

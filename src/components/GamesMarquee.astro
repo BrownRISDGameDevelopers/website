@@ -20,7 +20,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
 <section
   id="games"
-  class="ml-[calc(50%-50vw)] w-screen self-start"
+  class="ml-[calc(50%-50vw)] w-screen self-start max-[720px]:mt-1"
   aria-label="Featured games"
   data-node-id="5:3132"
   data-games-marquee
@@ -28,10 +28,10 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 >
   <div class="overflow-hidden">
     <div
-      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 touch-pan-y select-none [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5"
+      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 touch-pan-y select-none [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5 max-[720px]:pl-5"
       data-games-viewport
     >
-      <div class="flex w-max gap-6" data-games-track data-games-count={cards.length}>
+      <div class="flex w-max gap-6 max-[720px]:gap-4" data-games-track data-games-count={cards.length}>
         {marqueeCards.map((card) => (
           <div data-games-card>
             <GameCard {...card} />

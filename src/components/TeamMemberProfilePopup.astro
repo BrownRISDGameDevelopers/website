@@ -5,17 +5,17 @@ import { X } from '@lucide/astro';
 <template data-team-popup-template>
 	<div class="pointer-events-none fixed inset-0" data-team-popup-root>
 		<section
-			class="pointer-events-auto fixed left-4 top-4 flex w-[352px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden border border-white/90 bg-[#181a2e]/25 text-white backdrop-blur-md"
+			class="pointer-events-auto fixed left-4 top-4 flex w-[352px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden border border-white/90 bg-[#181a2e]/25 text-white backdrop-blur-md max-[520px]:left-2 max-[520px]:top-2 max-[520px]:w-[min(calc(100vw-1rem),320px)] max-[520px]:max-w-[calc(100vw-1rem)]"
 			role="dialog"
 			aria-modal="false"
 			aria-label="Profile"
 			data-team-popup
 		>
 			<header
-				class="flex cursor-grab select-none items-center justify-between border-b border-white/90 px-3 py-3 active:cursor-grabbing"
+				class="flex cursor-grab select-none items-center justify-between border-b border-white/90 px-3 py-3 active:cursor-grabbing max-[520px]:px-2.5 max-[520px]:py-2.5"
 				data-team-popup-drag-handle
 			>
-				<p class="m-0 text-xl leading-normal">PROFILE</p>
+				<p class="m-0 text-xl leading-normal max-[520px]:text-lg">PROFILE</p>
 
 				<div class="flex items-center gap-2">
 					<span
@@ -35,9 +35,9 @@ import { X } from '@lucide/astro';
 				</div>
 			</header>
 
-			<div class="grid grid-cols-[112px_minmax(0,1fr)] border-b border-white/90">
+			<div class="grid grid-cols-[112px_minmax(0,1fr)] border-b border-white/90 max-[520px]:grid-cols-[88px_minmax(0,1fr)]">
 				<div
-					class="flex min-h-28 items-center justify-center border-r border-white/90 bg-[#111325]/80 p-5"
+					class="flex min-h-28 items-center justify-center border-r border-white/90 bg-[#111325]/80 p-5 max-[520px]:min-h-24 max-[520px]:p-4"
 				>
 					<img
 						class="block h-full w-full object-contain"
@@ -50,14 +50,14 @@ import { X } from '@lucide/astro';
 					/>
 				</div>
 
-				<div class="flex flex-col justify-center gap-1 p-3">
+				<div class="flex flex-col justify-center gap-1 p-3 max-[520px]:p-2.5">
 					<p
-						class="m-0 text-[22px] leading-normal uppercase"
+						class="m-0 text-[22px] leading-normal uppercase max-[520px]:text-[18px]"
 						data-team-popup-name
 					>
 					</p>
 					<p
-						class="m-0 text-sm font-semibold leading-normal"
+						class="m-0 text-sm font-semibold leading-normal max-[520px]:text-xs"
 						data-team-popup-school
 					>
 					</p>
@@ -65,10 +65,10 @@ import { X } from '@lucide/astro';
 			</div>
 
 			<div
-				class="flex max-h-[calc(100vh-9rem)] flex-col gap-3 overflow-y-auto p-3 max-[720px]:max-h-[calc(100vh-10rem)]"
+				class="flex max-h-[calc(100vh-9rem)] flex-col gap-3 overflow-y-auto p-3 max-[720px]:max-h-[calc(100vh-10rem)] max-[520px]:max-h-[calc(100vh-7rem)] max-[520px]:gap-2.5 max-[520px]:p-2.5"
 			>
 				<p
-					class="m-0 text-[18px] leading-normal whitespace-pre-line"
+					class="m-0 text-[18px] leading-normal whitespace-pre-line max-[520px]:text-base"
 					data-team-popup-bio
 				>
 				</p>
@@ -151,12 +151,22 @@ import { X } from '@lucide/astro';
 		};
 
 		const clampPosition = (popup: HTMLElement, left: number, top: number) => {
+			const viewportPadding = window.innerWidth <= 520 ? 8 : 16;
 			const popupRect = popup.getBoundingClientRect();
-			const maxLeft = Math.max(16, window.innerWidth - popupRect.width - 16);
-			const maxTop = Math.max(16, window.innerHeight - popupRect.height - 16);
+			const maxLeft = Math.max(
+				viewportPadding,
+				window.innerWidth - popupRect.width - viewportPadding,
+			);
+			const maxTop = Math.max(
+				viewportPadding,
+				window.innerHeight - popupRect.height - viewportPadding,
+			);
 
-			popup.style.left = `${Math.min(Math.max(16, left), maxLeft)}px`;
-			popup.style.top = `${Math.min(Math.max(16, top), maxTop)}px`;
+			popup.style.left = `${Math.min(
+				Math.max(viewportPadding, left),
+				maxLeft,
+			)}px`;
+			popup.style.top = `${Math.min(Math.max(viewportPadding, top), maxTop)}px`;
 		};
 
 		const renderLinks = (links: PopupLink[], linksElement: HTMLElement) => {
@@ -175,7 +185,7 @@ import { X } from '@lucide/astro';
 				anchor.target = '_blank';
 				anchor.rel = 'noopener noreferrer';
 				anchor.className =
-					'relative inline-flex items-center justify-center border border-white px-6 py-3 text-sm leading-normal uppercase shadow-[4px_4px_0px_0px_rgba(255,255,255,0.24)]';
+					'pointer-events-auto relative z-0 inline-flex items-center justify-center border border-white bg-transparent px-6 py-3 text-sm leading-normal uppercase after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:translate-x-[6px] after:translate-y-[6px] after:border after:border-white/33 after:bg-transparent after:[clip-path:polygon(100%_0,_100%_100%,_0_100%,_0_calc(100%_-_6px),_calc(100%_-_6px)_calc(100%_-_6px),_calc(100%_-_6px)_0)] max-[520px]:px-4 max-[520px]:py-2.5 max-[520px]:text-xs';
 				anchor.textContent = link.label;
 				fragment.append(anchor);
 			}
