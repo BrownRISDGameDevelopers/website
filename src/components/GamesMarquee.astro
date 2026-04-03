@@ -20,7 +20,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
 <section
   id="games"
-  class="ml-[calc(50%-50vw)] w-screen self-start max-[720px]:mt-1"
+  class="relative left-1/2 w-screen -translate-x-1/2 self-start max-[720px]:mt-1"
   aria-label="Featured games"
   data-node-id="5:3132"
   data-games-marquee
@@ -28,7 +28,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 >
   <div class="overflow-hidden">
     <div
-      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 touch-pan-y select-none [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5 max-[720px]:pl-5"
+      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 select-none touch-pan-y [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5 max-[720px]:cursor-default max-[720px]:overflow-x-hidden max-[720px]:pl-5"
       data-games-viewport
     >
       <div class="flex w-max gap-6 max-[720px]:gap-4" data-games-track data-games-count={cards.length}>
@@ -53,6 +53,32 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     </div>
   </template>
 </section>
+
+<style>
+  @keyframes games-marquee-mobile {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(calc(var(--marquee-cycle, 0px) * -1), 0, 0);
+    }
+  }
+
+  @media (max-width: 720px) {
+    [data-games-track][data-mobile-animated="true"] {
+      animation: games-marquee-mobile var(--marquee-duration, 24s) linear infinite;
+      will-change: transform;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-games-track][data-mobile-animated="true"] {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>
 
 <script>
   type ClientCard = {
@@ -96,6 +122,8 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     const autoSpeed = 44;
 
     viewport.dataset.dragging = "false";
+
+    const usesMobileAnimation = () => window.matchMedia("(max-width: 720px)").matches;
 
     const normalizeCards = (cards: ClientCard[]) => (cards.length > 1 ? [...cards, ...cards] : cards);
 
@@ -193,6 +221,25 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
       }
 
       cycleDistance = repeatedCard.offsetLeft - firstCard.offsetLeft;
+      applyMobileAnimation();
+    };
+
+    const applyMobileAnimation = () => {
+      if (!usesMobileAnimation() || cycleDistance <= 0) {
+        track.dataset.mobileAnimated = "false";
+        track.style.removeProperty("--marquee-cycle");
+        track.style.removeProperty("--marquee-duration");
+        track.style.transform = "";
+        return;
+      }
+
+      track.dataset.mobileAnimated = "true";
+      track.style.setProperty("--marquee-cycle", `${cycleDistance}px`);
+      track.style.setProperty(
+        "--marquee-duration",
+        `${Math.max(cycleDistance / autoSpeed, 12).toFixed(2)}s`
+      );
+      viewport.scrollLeft = 0;
     };
 
     const wrapScroll = () => {
@@ -216,6 +263,11 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
       const deltaSeconds = (timestamp - lastFrame) / 1000;
       lastFrame = timestamp;
+
+      if (usesMobileAnimation()) {
+        window.requestAnimationFrame(animate);
+        return;
+      }
 
       if (!isDragging) {
         if (!isHovering && cycleDistance > 0) {
@@ -257,6 +309,10 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     };
 
     viewport.addEventListener("pointerdown", (event) => {
+      if (usesMobileAnimation()) {
+        return;
+      }
+
       if (event.button !== 0) {
         return;
       }
@@ -280,6 +336,10 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     });
 
     viewport.addEventListener("pointermove", (event) => {
+      if (usesMobileAnimation()) {
+        return;
+      }
+
       if (!isDragging || event.pointerId !== activePointerId) {
         return;
       }
@@ -306,6 +366,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
     viewport.addEventListener("pointerup", endDrag);
     viewport.addEventListener("pointercancel", endDrag);
+    viewport.addEventListener("scroll", wrapScroll, { passive: true });
 
     marquee.addEventListener(
       "click",
@@ -329,6 +390,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     resizeObserver.observe(track);
     measureCycle();
     wrapScroll();
+    window.addEventListener("resize", applyMobileAnimation);
     void loadCards();
     window.requestAnimationFrame(animate);
   }

@@ -4,12 +4,41 @@ import '../styles/global.css';
 interface Props {
 	title?: string;
 	description?: string;
+	image?: string;
 }
 
 const {
 	title = 'Brown RISD Game Developers',
 	description = 'Brown RISD Game Developers club website.',
+	image = '/assets/site-background.png',
 } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://brownrisd.games');
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
+const imageUrl = new URL(image, siteUrl);
+const isHomePage = Astro.url.pathname === '/';
+const structuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Brown RISD Game Developers',
+		url: siteUrl.toString(),
+		logo: new URL('/assets/brgd-logo-white.png', siteUrl).toString(),
+		sameAs: [
+			'https://brownrisdgames.itch.io/',
+			'https://www.instagram.com/brownrisdgamedev/',
+			'https://discord.gg/dhrKyse6RH',
+			'https://docs.brownrisd.games/',
+		],
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': isHomePage ? 'WebSite' : 'WebPage',
+		name: title,
+		description,
+		url: canonicalUrl.toString(),
+	},
+];
 ---
 
 <!doctype html>
@@ -18,21 +47,35 @@ const {
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		<meta name="robots" content="index,follow,max-image-preview:large" />
 		<meta name="theme-color" content="#181a2e" />
+		<link rel="canonical" href={canonicalUrl.toString()} />
 		<link rel="icon" type="image/png" href="/assets/favicon.png" />
+		<meta property="og:site_name" content="Brown RISD Game Developers" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={isHomePage ? 'website' : 'article'} />
+		<meta property="og:url" content={canonicalUrl.toString()} />
+		<meta property="og:image" content={imageUrl.toString()} />
+		<meta property="og:locale" content="en_US" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl.toString()} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap"
 		/>
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 		<title>{title}</title>
 	</head>
 	<body
 		class="relative min-h-screen overflow-x-hidden bg-page-background font-mono text-white antialiased"
 	>
 		<div
-			class="pointer-events-none fixed inset-0 z-0 flex items-end justify-center overflow-hidden"
+			class="pointer-events-none fixed inset-x-0 top-0 z-0 flex h-screen items-end justify-center overflow-hidden max-[720px]:h-[100dvh]"
 			aria-hidden="true"
 		>
 			<img

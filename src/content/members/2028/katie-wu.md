@@ -1,6 +1,6 @@
 ---
 name: Katie Wu
-school: Brown
+school: RISD
 grad: 2028
 roles: E-Board
 games:

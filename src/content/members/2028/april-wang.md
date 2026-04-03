@@ -1,7 +1,7 @@
 ---
 name: April Wang
 school: RISD
-grad: 2027
+grad: 2028
 roles: E-Board
 games:
 links:
