@@ -1,12 +1,27 @@
 ---
 const discordIcon = "https://cdn.simpleicons.org/discord/white";
 const instagramIcon = "https://cdn.simpleicons.org/instagram/white";
+const navLinksClass =
+  "flex items-center gap-12 whitespace-nowrap text-base leading-[21px] font-medium max-[1180px]:w-full max-[1180px]:flex-wrap max-[1180px]:justify-start max-[1180px]:gap-x-8 max-[1180px]:gap-y-6";
+const socialLinkClass =
+  "flex size-6 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background";
 ---
 
-<header class="site-nav" data-node-id="5:2351">
-  <div class="site-nav__left" data-node-id="5:3095">
-    <a class="site-nav__brand" href="/" aria-label="Brown RISD Game Developers home">
+<header
+  class="relative flex h-20 w-full items-center justify-between max-[1180px]:h-auto max-[1180px]:flex-col max-[1180px]:items-start max-[1180px]:gap-6"
+  data-node-id="5:2351"
+>
+  <div
+    class="flex h-full min-w-0 flex-1 items-center gap-16 max-[1180px]:w-full max-[1180px]:flex-wrap max-[1180px]:gap-6"
+    data-node-id="5:3095"
+  >
+    <a
+      class="flex h-16 w-14 flex-none items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+      href="/"
+      aria-label="Brown RISD Game Developers home"
+    >
       <img
+        class="block h-16 w-14 object-cover"
         src="/assets/brgd-logo-white.png"
         alt="Brown RISD Game Developers logo"
         width="56"
@@ -16,34 +31,34 @@ const instagramIcon = "https://cdn.simpleicons.org/instagram/white";
       />
     </a>
 
-    <nav class="site-nav__links site-nav__links--primary" aria-label="Primary">
+    <nav class={navLinksClass} aria-label="Primary">
       <a href="https://brownrisdgames.itch.io/">GAMES</a>
       <a href="https://brgd.bandcamp.com/">SOUNDTRACKS</a>
     </nav>
   </div>
 
-  <div class="site-nav__right">
-    <nav class="site-nav__links site-nav__links--secondary" aria-label="Secondary">
+  <div class="flex h-full items-center justify-end gap-12 max-[1180px]:w-full max-[1180px]:flex-wrap max-[1180px]:justify-start max-[1180px]:gap-x-8 max-[1180px]:gap-y-6">
+    <nav class={navLinksClass} aria-label="Secondary">
       <a href="https://docs.brownrisd.games/">CLUB DOCUMENTATION</a>
-      <a href="#team">TEAM</a>
+      <a href="/team">TEAM</a>
       <a href="#join">JOIN US!</a>
     </nav>
 
-    <div class="site-nav__social">
+    <div class="flex items-center gap-8">
       <a
-        class="site-nav__social-link site-nav__social-link--discord"
+        class={socialLinkClass}
         href="https://discord.gg/dhrKyse6RH"
         aria-label="Discord"
       >
-        <img class="site-nav__social-icon" src={discordIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
+        <img class="block size-full max-w-none object-contain" src={discordIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
       </a>
 
       <a
-        class="site-nav__social-link site-nav__social-link--instagram"
+        class={socialLinkClass}
         href="https://www.instagram.com/brownrisdgamedev/"
         aria-label="Instagram"
       >
-        <img class="site-nav__social-icon" src={instagramIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
+        <img class="block size-full max-w-none object-contain" src={instagramIcon} alt="" width="24" height="24" draggable="false" loading="eager" />
       </a>
     </div>
   </div>

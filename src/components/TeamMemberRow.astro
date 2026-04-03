@@ -1,0 +1,41 @@
+---
+import type { TeamSchool } from "../data/team";
+
+interface Props {
+  displayName: string;
+  school: TeamSchool;
+  role: string;
+}
+
+const {
+  displayName,
+  school,
+  role
+} = Astro.props;
+
+const schoolLabelClass = "m-0 self-start text-sm leading-normal font-semibold";
+const brownClass = "text-[#d3c1bb]";
+const risdClass = "text-[#dfddff]";
+---
+
+<li
+  class="flex w-full items-end gap-3 max-[900px]:items-start max-[900px]:justify-between"
+>
+  <div class="flex min-w-0 items-start gap-3">
+    <p class="m-0 min-w-0 text-[20px] leading-normal max-[720px]:text-lg">{displayName}</p>
+    {
+      school === "BROWN|RISD" ? (
+        <p class={schoolLabelClass}><span class={brownClass}>BROWN</span><span class="text-white">|</span><span class={risdClass}>RISD</span></p>
+      ) : (
+        <p class:list={[schoolLabelClass, school === "RISD" ? risdClass : brownClass]}>
+          {school}
+        </p>
+      )
+    }
+  </div>
+  <span
+    class="dot-leader-column min-w-0 flex-1 self-end overflow-hidden text-white/90"
+    aria-hidden="true"
+  ></span>
+  <p class="m-0 shrink-0 self-start text-[20px] leading-normal max-[720px]:text-lg max-[900px]:pl-3">{role}</p>
+</li>

@@ -13,12 +13,28 @@ interface Props {
 }
 
 const { cards } = Astro.props;
+const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 ---
 
-<section id="games" class="games-marquee" aria-label="Featured games" data-node-id="5:3132" data-games-marquee>
-  <div class="games-marquee__viewport" data-games-viewport>
-    <div class="games-marquee__track" data-games-track>
-      {cards.map((card) => <GameCard {...card} />)}
+<section
+  id="games"
+  class="ml-[calc(50%-50vw)] w-screen self-start"
+  aria-label="Featured games"
+  data-node-id="5:3132"
+  data-games-marquee
+>
+  <div class="overflow-hidden">
+    <div
+      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 touch-pan-y select-none [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5"
+      data-games-viewport
+    >
+      <div class="flex w-max gap-6" data-games-track data-games-count={cards.length}>
+        {marqueeCards.map((card) => (
+          <div data-games-card>
+            <GameCard {...card} />
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -36,12 +52,51 @@ const { cards } = Astro.props;
 
     let velocity = 0;
     let lastFrame = 0;
+    let cycleDistance = 0;
     let isDragging = false;
+    let isHovering = false;
     let activePointerId: number | null = null;
     let lastPointerX = 0;
     let lastPointerTime = 0;
     let draggedDistance = 0;
     let suppressClick = false;
+    const autoSpeed = 44;
+
+    viewport.dataset.dragging = "false";
+
+    const measureCycle = () => {
+      const count = Number.parseInt(track.dataset.gamesCount ?? "0", 10);
+      const cards = track.querySelectorAll("[data-games-card]");
+
+      if (count < 2 || cards.length <= count) {
+        cycleDistance = 0;
+        return;
+      }
+
+      const firstCard = cards[0];
+      const repeatedCard = cards[count];
+
+      if (!(firstCard instanceof HTMLElement) || !(repeatedCard instanceof HTMLElement)) {
+        cycleDistance = 0;
+        return;
+      }
+
+      cycleDistance = repeatedCard.offsetLeft - firstCard.offsetLeft;
+    };
+
+    const wrapScroll = () => {
+      if (cycleDistance <= 0) {
+        return;
+      }
+
+      while (viewport.scrollLeft >= cycleDistance) {
+        viewport.scrollLeft -= cycleDistance;
+      }
+
+      while (viewport.scrollLeft < 0) {
+        viewport.scrollLeft += cycleDistance;
+      }
+    };
 
     const animate = (timestamp: number) => {
       if (!lastFrame) {
@@ -52,19 +107,16 @@ const { cards } = Astro.props;
       lastFrame = timestamp;
 
       if (!isDragging) {
+        if (!isHovering && cycleDistance > 0) {
+          viewport.scrollLeft += autoSpeed * deltaSeconds;
+        }
+
         if (Math.abs(velocity) > 1) {
           viewport.scrollLeft -= velocity * deltaSeconds;
           velocity *= Math.pow(0.92, deltaSeconds * 60);
-
-          const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
-
-          if (
-            (viewport.scrollLeft <= 0 && velocity > 0) ||
-            (viewport.scrollLeft >= maxScrollLeft && velocity < 0)
-          ) {
-            velocity = 0;
-          }
         }
+
+        wrapScroll();
       }
 
       window.requestAnimationFrame(animate);
@@ -82,7 +134,7 @@ const { cards } = Astro.props;
       isDragging = false;
       activePointerId = null;
       lastPointerTime = 0;
-      viewport.classList.remove("is-dragging");
+      viewport.dataset.dragging = "false";
 
       if (draggedDistance > 6) {
         suppressClick = true;
@@ -105,7 +157,7 @@ const { cards } = Astro.props;
       lastPointerTime = performance.now();
       draggedDistance = 0;
       lastFrame = 0;
-      viewport.classList.add("is-dragging");
+      viewport.dataset.dragging = "true";
       viewport.setPointerCapture(event.pointerId);
     });
 
@@ -122,7 +174,16 @@ const { cards } = Astro.props;
       draggedDistance += Math.abs(deltaX);
       velocity = (deltaX / deltaMs) * 1000;
       viewport.scrollLeft -= deltaX;
+      wrapScroll();
       event.preventDefault();
+    });
+
+    viewport.addEventListener("pointerenter", () => {
+      isHovering = true;
+    });
+
+    viewport.addEventListener("pointerleave", () => {
+      isHovering = false;
     });
 
     viewport.addEventListener("pointerup", endDrag);
@@ -142,12 +203,14 @@ const { cards } = Astro.props;
     );
 
     const resizeObserver = new ResizeObserver(() => {
-      const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-      viewport.scrollLeft = Math.min(viewport.scrollLeft, maxScrollLeft);
+      measureCycle();
+      wrapScroll();
     });
 
     resizeObserver.observe(viewport);
     resizeObserver.observe(track);
+    measureCycle();
+    wrapScroll();
     window.requestAnimationFrame(animate);
   }
 </script>

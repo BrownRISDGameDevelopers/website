@@ -1,5 +1,28 @@
-@import "./base.css";
-@import "./layout.css";
-@import "./nav.css";
-@import "./hero.css";
-@import "./games.css";
+@import "tailwindcss";
+
+@theme {
+  --font-mono:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --color-page-background: #181a2e;
+}
+
+@layer components {
+  .dot-leader-column {
+    display: flex;
+    align-items: center;
+    transform: translateY(-8px);
+    user-select: none;
+  }
+
+  .dot-leader-column::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='2' viewBox='0 0 12 2' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23ffffff' fill-opacity='0.9'/%3E%3C/svg%3E");
+    background-position: left center;
+    background-repeat: repeat-x;
+    background-size: 12px 2px;
+  }
+}

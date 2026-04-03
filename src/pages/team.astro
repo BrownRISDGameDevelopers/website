@@ -1,0 +1,104 @@
+---
+import { ChevronDown } from "@lucide/astro";
+import SiteNav from "../components/SiteNav.astro";
+import TeamMemberRow from "../components/TeamMemberRow.astro";
+import { alumniClasses, currentMembers } from "../data/team";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Team | Brown RISD Game Developers"
+  description="Meet the developers, designers, producers and sound engineers behind Brown RISD Game Developers."
+>
+  <main
+    class="relative min-h-screen w-full px-16 py-8 max-[1180px]:px-5 max-[1180px]:pt-6 max-[1180px]:pb-10"
+    data-node-id="18:1804"
+  >
+    <div class="flex min-h-[calc(100vh-4rem)] flex-col gap-12 max-[1180px]:min-h-0">
+      <SiteNav />
+
+      <section
+        class="flex max-w-[537px] flex-col gap-4 text-white"
+        aria-labelledby="team-title"
+        data-node-id="18:1825"
+      >
+        <h1
+          id="team-title"
+          class="m-0 text-5xl/[1.3] font-bold uppercase max-[720px]:text-[40px] max-[720px]:leading-[52px]"
+          data-node-id="18:1826"
+        >
+          TEAM
+        </h1>
+
+        <p
+          class="m-0 text-2xl/[1.3] font-normal max-[720px]:text-xl max-[720px]:leading-7"
+          data-node-id="18:1827"
+        >
+          Meet the developers, designers, producers and sound engineers who turn our ideas into
+          reality!
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-10" aria-label="Team roster">
+        <details class="group w-full border border-white" data-node-id="18:1828">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:text-xl"
+            data-node-id="18:1829"
+          >
+            <span data-node-id="18:1830">CURRENT MEMBERS</span>
+
+            <ChevronDown
+              class="size-7 shrink-0 transition-transform duration-200 group-open:rotate-180"
+              aria-hidden="true"
+              stroke-width={1.75}
+            />
+          </summary>
+
+          <ul
+            class="m-0 flex list-none flex-col gap-1 overflow-x-hidden border-t border-white p-4"
+            data-node-id="18:1103"
+          >
+            {currentMembers.map((member) => (
+              <TeamMemberRow {...member} />
+            ))}
+          </ul>
+        </details>
+
+        {alumniClasses.length > 0 && (
+          <div class="flex flex-col gap-10">
+            <h2 class="m-0 text-4xl font-bold uppercase leading-[1.3] max-[720px]:text-[32px]">
+              ALUMNI
+            </h2>
+
+            <div class="w-full border border-white" data-node-id="19:2083">
+              {alumniClasses.map((alumniClass, index) => (
+                <details
+                  class:list={[
+                    "group w-full",
+                    index < alumniClasses.length - 1 && "border-b border-white"
+                  ]}
+                >
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:text-xl">
+                    <span>{alumniClass.label}</span>
+
+                    <ChevronDown
+                      class="size-7 shrink-0 transition-transform duration-200 group-open:rotate-180"
+                      aria-hidden="true"
+                      stroke-width={1.75}
+                    />
+                  </summary>
+
+                  <ul class="m-0 flex list-none flex-col gap-1 border-t border-white p-4">
+                    {alumniClass.members.map((member) => (
+                      <TeamMemberRow {...member} />
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
+  </main>
+</BaseLayout>

@@ -28,9 +28,10 @@ const {
     />
     <title>{title}</title>
   </head>
-  <body>
-    <div class="site-background" aria-hidden="true">
+  <body class="relative min-h-screen bg-page-background font-mono text-white antialiased">
+    <div class="pointer-events-none fixed inset-0 z-0 flex items-end justify-center overflow-hidden" aria-hidden="true">
       <img
+        class="block h-full w-full max-w-none object-cover object-center object-bottom"
         src="/assets/site-background-2.png"
         alt=""
         width="2999"
@@ -40,7 +41,7 @@ const {
       />
     </div>
 
-    <div class="site-shell">
+    <div class="relative z-10 flex min-h-screen items-start justify-center max-[1180px]:block">
       <slot />
     </div>
   </body>

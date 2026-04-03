@@ -15,20 +15,32 @@ const cards = Array.from({ length: 4 }, () => ({
   title="Brown RISD Game Developers"
   description="Brown RISD Game Developers is an indie game studio focused on collaborative, student-led game projects."
 >
-  <main class="landing-page" data-node-id="5:62">
-    <SiteNav />
+  <main
+    class="relative min-h-screen w-full px-16 py-8 max-[1180px]:px-5 max-[1180px]:pt-6 max-[1180px]:pb-10"
+    data-node-id="5:62"
+  >
+    <div class="flex min-h-[calc(100vh-4rem)] flex-col justify-between gap-12 max-[1180px]:min-h-0 max-[1180px]:gap-10">
+      <SiteNav />
 
-    <section class="hero" aria-labelledby="hero-title" data-node-id="5:3224">
-      <h1 id="hero-title" class="hero__title" data-node-id="5:3225">
-        <span>BROWN RISD</span>
-        <span>GAME DEVELOPERS</span>
-      </h1>
+      <section class="w-full max-w-[537px]" aria-labelledby="hero-title" data-node-id="5:3224">
+        <h1
+          id="hero-title"
+          class="mb-4 text-5xl/[1.3] font-bold uppercase max-[720px]:text-[40px] max-[720px]:leading-[52px]"
+          data-node-id="5:3225"
+        >
+          <span class="block">BROWN RISD</span>
+          <span class="block">GAME DEVELOPERS</span>
+        </h1>
 
-      <p class="hero__copy" data-node-id="5:3226">
-        We’re an indie game studio focused on creating collaborative, student-led game projects.
-      </p>
-    </section>
+        <p
+          class="m-0 text-2xl/[1.3] font-normal max-[720px]:text-xl max-[720px]:leading-7"
+          data-node-id="5:3226"
+        >
+          We’re an indie game studio focused on creating collaborative, student-led game projects.
+        </p>
+      </section>
 
-    <GamesMarquee cards={cards} />
+      <GamesMarquee cards={cards} />
+    </div>
   </main>
 </BaseLayout>
