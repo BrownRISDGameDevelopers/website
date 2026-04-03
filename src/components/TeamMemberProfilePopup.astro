@@ -2,86 +2,95 @@
 import { X } from '@lucide/astro';
 ---
 
-<div class="pointer-events-none fixed inset-0 z-50" data-team-popup-root hidden>
-	<section
-		class="pointer-events-auto fixed left-4 top-4 flex w-[352px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden border border-white/90 bg-[#181a2e]/25 text-white backdrop-blur-md"
-		role="dialog"
-		aria-modal="false"
-		aria-labelledby="team-profile-name"
-		data-team-popup
-	>
-		<header
-			class="flex cursor-grab items-center justify-between border-b border-white/90 px-3 py-3 select-none active:cursor-grabbing"
-			data-team-popup-drag-handle
+<template data-team-popup-template>
+	<div class="pointer-events-none fixed inset-0" data-team-popup-root>
+		<section
+			class="pointer-events-auto fixed left-4 top-4 flex w-[352px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden border border-white/90 bg-[#181a2e]/25 text-white backdrop-blur-md"
+			role="dialog"
+			aria-modal="false"
+			aria-label="Profile"
+			data-team-popup
 		>
-			<p class="m-0 text-xl leading-normal">PROFILE</p>
-
-			<button
-				type="button"
-				class="flex size-5 items-center justify-center border-0 bg-transparent p-0 text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-				aria-label="Close profile"
-				data-team-popup-close
+			<header
+				class="flex cursor-grab select-none items-center justify-between border-b border-white/90 px-3 py-3 active:cursor-grabbing"
+				data-team-popup-drag-handle
 			>
-				<X class="size-5" aria-hidden="true" stroke-width={1.75} />
-			</button>
-		</header>
+				<p class="m-0 text-xl leading-normal">PROFILE</p>
 
-		<div
-			class="grid grid-cols-[112px_minmax(0,1fr)] border-b border-white/90"
-		>
-			<div
-				class="flex min-h-28 items-center justify-center border-r border-white/90 bg-[#111325]/80 p-5"
-			>
-				<img
-					class="block h-full w-full object-contain"
-					src="/assets/brgd-logo-white.png"
-					alt="BRGD logo"
-					width="56"
-					height="64"
-					draggable="false"
-					loading="eager"
-				/>
+				<div class="flex items-center gap-2">
+					<span
+						class="text-[11px] leading-none tracking-[0.08em] text-white/70 max-[520px]:hidden"
+						aria-hidden="true"
+					>
+						[ESC]
+					</span>
+					<button
+						type="button"
+						class="flex size-5 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+						aria-label="Close profile"
+						data-team-popup-close
+					>
+						<X class="size-5" aria-hidden="true" stroke-width={1.75} />
+					</button>
+				</div>
+			</header>
+
+			<div class="grid grid-cols-[112px_minmax(0,1fr)] border-b border-white/90">
+				<div
+					class="flex min-h-28 items-center justify-center border-r border-white/90 bg-[#111325]/80 p-5"
+				>
+					<img
+						class="block h-full w-full object-contain"
+						src="/assets/brgd-logo-white.png"
+						alt="BRGD logo"
+						width="56"
+						height="64"
+						draggable="false"
+						loading="eager"
+					/>
+				</div>
+
+				<div class="flex flex-col justify-center gap-1 p-3">
+					<p
+						class="m-0 text-[22px] leading-normal uppercase"
+						data-team-popup-name
+					>
+					</p>
+					<p
+						class="m-0 text-sm font-semibold leading-normal"
+						data-team-popup-school
+					>
+					</p>
+				</div>
 			</div>
 
-			<div class="flex flex-col justify-center gap-1 p-3">
+			<div
+				class="flex max-h-[calc(100vh-9rem)] flex-col gap-3 overflow-y-auto p-3 max-[720px]:max-h-[calc(100vh-10rem)]"
+			>
 				<p
-					id="team-profile-name"
-					class="m-0 text-[22px] leading-normal uppercase"
-					data-team-popup-name
+					class="m-0 text-[18px] leading-normal whitespace-pre-line"
+					data-team-popup-bio
 				>
 				</p>
-				<p
-					class="m-0 text-sm font-semibold leading-normal"
-					data-team-popup-school
+
+				<div
+					class="flex flex-col gap-0 text-sm leading-normal text-white/80"
+					data-team-popup-games
 				>
-				</p>
-			</div>
-		</div>
+				</div>
 
-		<div
-			class="flex max-h-[calc(100vh-9rem)] flex-col gap-3 overflow-y-auto p-3 max-[720px]:max-h-[calc(100vh-10rem)]"
-		>
-			<p
-				class="m-0 text-[18px] leading-normal whitespace-pre-line"
-				data-team-popup-bio
-			>
-			</p>
-
-			<div
-				class="flex flex-col gap-0 text-sm leading-normal text-white/80"
-				data-team-popup-games
-			>
+				<div
+					class="grid grid-cols-2 gap-3 max-[520px]:grid-cols-1"
+					data-team-popup-links
+					hidden
+				>
+				</div>
 			</div>
+		</section>
+	</div>
+</template>
 
-			<div
-				class="grid grid-cols-2 gap-3 max-[520px]:grid-cols-1"
-				data-team-popup-links
-				hidden
-			>
-			</div>
-		</div>
-	</section>
-</div>
+<div data-team-popup-portal></div>
 
 <script>
 	type PopupGame = {
@@ -104,33 +113,18 @@ import { X } from '@lucide/astro';
 		school: 'RISD' | 'BROWN' | 'BROWN|RISD';
 	};
 
-	const popupRoot = document.querySelector('[data-team-popup-root]');
-	const popup = document.querySelector('[data-team-popup]');
-	const dragHandle = document.querySelector('[data-team-popup-drag-handle]');
-	const closeButton = document.querySelector('[data-team-popup-close]');
-	const nameElement = document.querySelector('[data-team-popup-name]');
-	const schoolElement = document.querySelector('[data-team-popup-school]');
-	const bioElement = document.querySelector('[data-team-popup-bio]');
-	const gamesElement = document.querySelector('[data-team-popup-games]');
-	const linksElement = document.querySelector('[data-team-popup-links]');
-	const triggerElements = document.querySelectorAll(
-		'[data-team-member-trigger]',
-	);
+	const popupTemplate = document.querySelector('[data-team-popup-template]');
+	const popupPortal = document.querySelector('[data-team-popup-portal]');
+	const triggerElements = document.querySelectorAll('[data-team-member-trigger]');
 
 	if (
-		popupRoot instanceof HTMLElement &&
-		popup instanceof HTMLElement &&
-		dragHandle instanceof HTMLElement &&
-		closeButton instanceof HTMLButtonElement &&
-		nameElement instanceof HTMLElement &&
-		schoolElement instanceof HTMLElement &&
-		bioElement instanceof HTMLElement &&
-		gamesElement instanceof HTMLElement &&
-		linksElement instanceof HTMLElement
+		popupTemplate instanceof HTMLTemplateElement &&
+		popupPortal instanceof HTMLElement
 	) {
-		let activePointerId: number | null = null;
-		let dragOffsetX = 0;
-		let dragOffsetY = 0;
+		let highestZIndex = 100;
+		let popupCount = 0;
+		const openPopupRoots = new Map<string, HTMLElement>();
+		const popupClosers = new WeakMap<HTMLElement, () => void>();
 
 		const getSchoolMarkup = (
 			school: PopupMember['school'],
@@ -139,7 +133,7 @@ import { X } from '@lucide/astro';
 		) => {
 			const gradLabel = `‘${String(grad).slice(-2)}`;
 			const eBoardMarkup = isEBoard
-				? '<span class="mx-2 inline-block size-[4px] translate-y-[-1px] bg-white/66 align-middle"></span><span class="text-[#d8f5ff]/85">E-BOARD</span>'
+				? '<span class="mx-2 inline-block size-[4px] translate-y-[-1px] bg-white align-middle"></span><span class="text-[#d8f5ff]/85">E-BOARD</span>'
 				: '';
 
 			if (school === 'BROWN|RISD') {
@@ -151,41 +145,21 @@ import { X } from '@lucide/astro';
 			return `<span class="${schoolClass}">${school}</span><span class="text-white"> ${gradLabel}</span>${eBoardMarkup}`;
 		};
 
-		const clampPosition = (left: number, top: number) => {
+		const bringToFront = (popupRoot: HTMLElement) => {
+			highestZIndex += 1;
+			popupRoot.style.zIndex = String(highestZIndex);
+		};
+
+		const clampPosition = (popup: HTMLElement, left: number, top: number) => {
 			const popupRect = popup.getBoundingClientRect();
-			const maxLeft = Math.max(
-				16,
-				window.innerWidth - popupRect.width - 16,
-			);
-			const maxTop = Math.max(
-				16,
-				window.innerHeight - popupRect.height - 16,
-			);
+			const maxLeft = Math.max(16, window.innerWidth - popupRect.width - 16);
+			const maxTop = Math.max(16, window.innerHeight - popupRect.height - 16);
 
 			popup.style.left = `${Math.min(Math.max(16, left), maxLeft)}px`;
 			popup.style.top = `${Math.min(Math.max(16, top), maxTop)}px`;
 		};
 
-		const centerPopup = () => {
-			popupRoot.hidden = false;
-			popup.style.left = '16px';
-			popup.style.top = '16px';
-
-			window.requestAnimationFrame(() => {
-				const popupRect = popup.getBoundingClientRect();
-				clampPosition(
-					(window.innerWidth - popupRect.width) / 2,
-					(window.innerHeight - popupRect.height) / 2,
-				);
-			});
-		};
-
-		const closePopup = () => {
-			popupRoot.hidden = true;
-			activePointerId = null;
-		};
-
-		const renderLinks = (links: PopupLink[]) => {
+		const renderLinks = (links: PopupLink[], linksElement: HTMLElement) => {
 			linksElement.replaceChildren();
 
 			if (links.length === 0) {
@@ -210,7 +184,7 @@ import { X } from '@lucide/astro';
 			linksElement.append(fragment);
 		};
 
-		const renderGames = (member: PopupMember) => {
+		const renderGames = (member: PopupMember, gamesElement: HTMLElement) => {
 			gamesElement.replaceChildren();
 
 			if (member.games.length === 0) {
@@ -230,8 +204,81 @@ import { X } from '@lucide/astro';
 			gamesElement.hidden = false;
 		};
 
-		const openPopup = (member: PopupMember, trigger?: HTMLElement) => {
-			const wasHidden = popupRoot.hidden;
+		const getPopupRoots = () =>
+			Array.from(
+				popupPortal.querySelectorAll<HTMLElement>('[data-team-popup-root]'),
+			);
+
+		const getTopmostPopupRoot = () => {
+			let topmostRoot: HTMLElement | null = null;
+			let topmostZIndex = -1;
+
+			for (const popupRoot of getPopupRoots()) {
+				const zIndex = Number.parseInt(popupRoot.style.zIndex || '0', 10);
+
+				if (zIndex >= topmostZIndex) {
+					topmostRoot = popupRoot;
+					topmostZIndex = zIndex;
+				}
+			}
+
+			return topmostRoot;
+		};
+
+		const openPopup = (
+			member: PopupMember,
+			memberKey: string,
+			trigger?: HTMLElement,
+		) => {
+			const existingPopupRoot = openPopupRoots.get(memberKey);
+
+			if (existingPopupRoot?.isConnected) {
+				bringToFront(existingPopupRoot);
+				return;
+			}
+
+			if (existingPopupRoot) {
+				openPopupRoots.delete(memberKey);
+			}
+
+			const fragment = popupTemplate.content.cloneNode(true);
+
+			if (!(fragment instanceof DocumentFragment)) {
+				return;
+			}
+
+			const popupRoot = fragment.querySelector('[data-team-popup-root]');
+			const popup = fragment.querySelector('[data-team-popup]');
+			const dragHandle = fragment.querySelector('[data-team-popup-drag-handle]');
+			const closeButton = fragment.querySelector('[data-team-popup-close]');
+			const nameElement = fragment.querySelector('[data-team-popup-name]');
+			const schoolElement = fragment.querySelector('[data-team-popup-school]');
+			const bioElement = fragment.querySelector('[data-team-popup-bio]');
+			const gamesElement = fragment.querySelector('[data-team-popup-games]');
+			const linksElement = fragment.querySelector('[data-team-popup-links]');
+
+			if (
+				!(popupRoot instanceof HTMLElement) ||
+				!(popup instanceof HTMLElement) ||
+				!(dragHandle instanceof HTMLElement) ||
+				!(closeButton instanceof HTMLButtonElement) ||
+				!(nameElement instanceof HTMLElement) ||
+				!(schoolElement instanceof HTMLElement) ||
+				!(bioElement instanceof HTMLElement) ||
+				!(gamesElement instanceof HTMLElement) ||
+				!(linksElement instanceof HTMLElement)
+			) {
+				return;
+			}
+
+			popupCount += 1;
+			const nameId = `team-profile-name-${popupCount}`;
+			const cascadeOffset = ((popupCount - 1) % 6) * 18;
+			let activePointerId: number | null = null;
+			let dragOffsetX = 0;
+			let dragOffsetY = 0;
+
+			nameElement.id = nameId;
 			nameElement.textContent = member.name.toLocaleUpperCase('en-US');
 			schoolElement.innerHTML = getSchoolMarkup(
 				member.school,
@@ -239,19 +286,100 @@ import { X } from '@lucide/astro';
 				member.isEBoard,
 			);
 			bioElement.textContent = member.bio;
-			renderGames(member);
-			renderLinks(member.links);
+			popup.setAttribute('aria-labelledby', nameId);
+			popup.removeAttribute('aria-label');
+			renderGames(member, gamesElement);
+			renderLinks(member.links, linksElement);
+			bringToFront(popupRoot);
 
-			if (wasHidden) {
-				centerPopup();
-			}
+			const closePopup = () => {
+				if (
+					activePointerId !== null &&
+					dragHandle.hasPointerCapture(activePointerId)
+				) {
+					dragHandle.releasePointerCapture(activePointerId);
+				}
 
-			if (wasHidden && trigger instanceof HTMLElement) {
-				window.requestAnimationFrame(() => {
+				activePointerId = null;
+				openPopupRoots.delete(memberKey);
+				popupRoot.remove();
+			};
+
+			openPopupRoots.set(memberKey, popupRoot);
+			popupClosers.set(popupRoot, closePopup);
+
+			popup.addEventListener('pointerdown', () => {
+				bringToFront(popupRoot);
+			});
+
+			closeButton.addEventListener('click', closePopup);
+
+			dragHandle.addEventListener('pointerdown', event => {
+				if (
+					event.button !== 0 ||
+					(event.target instanceof Element &&
+						event.target.closest(
+							'[data-team-popup-close], a, button, input, textarea, select',
+						))
+				) {
+					return;
+				}
+
+				bringToFront(popupRoot);
+				const popupRect = popup.getBoundingClientRect();
+				activePointerId = event.pointerId;
+				dragOffsetX = event.clientX - popupRect.left;
+				dragOffsetY = event.clientY - popupRect.top;
+				dragHandle.setPointerCapture(event.pointerId);
+			});
+
+			dragHandle.addEventListener('pointermove', event => {
+				if (event.pointerId !== activePointerId) {
+					return;
+				}
+
+				clampPosition(
+					popup,
+					event.clientX - dragOffsetX,
+					event.clientY - dragOffsetY,
+				);
+			});
+
+			const endDrag = (event: PointerEvent) => {
+				if (event.pointerId !== activePointerId) {
+					return;
+				}
+
+				if (dragHandle.hasPointerCapture(event.pointerId)) {
+					dragHandle.releasePointerCapture(event.pointerId);
+				}
+
+				activePointerId = null;
+			};
+
+			dragHandle.addEventListener('pointerup', endDrag);
+			dragHandle.addEventListener('pointercancel', endDrag);
+
+			popupPortal.append(fragment);
+
+			window.requestAnimationFrame(() => {
+				if (trigger instanceof HTMLElement) {
 					const triggerRect = trigger.getBoundingClientRect();
-					clampPosition(triggerRect.left, triggerRect.top + 12);
-				});
-			}
+					clampPosition(
+						popup,
+						triggerRect.left + cascadeOffset,
+						triggerRect.top + 12 + cascadeOffset,
+					);
+					return;
+				}
+
+				const popupRect = popup.getBoundingClientRect();
+				clampPosition(
+					popup,
+					(window.innerWidth - popupRect.width) / 2 + cascadeOffset,
+					(window.innerHeight - popupRect.height) / 2 + cascadeOffset,
+				);
+			});
 		};
 
 		for (const trigger of triggerElements) {
@@ -266,66 +394,30 @@ import { X } from '@lucide/astro';
 					return;
 				}
 
-				openPopup(JSON.parse(payload) as PopupMember, trigger);
+				openPopup(JSON.parse(payload) as PopupMember, payload, trigger);
 			});
 		}
 
-		closeButton.addEventListener('click', closePopup);
-
 		window.addEventListener('keydown', event => {
-			if (event.key === 'Escape') {
-				closePopup();
-			}
-		});
-
-		dragHandle.addEventListener('pointerdown', event => {
-			if (
-				event.button !== 0 ||
-				(event.target instanceof Element &&
-					event.target.closest(
-						'[data-team-popup-close], a, button, input, textarea, select',
-					))
-			) {
+			if (event.key !== 'Escape') {
 				return;
 			}
 
-			const popupRect = popup.getBoundingClientRect();
-			activePointerId = event.pointerId;
-			dragOffsetX = event.clientX - popupRect.left;
-			dragOffsetY = event.clientY - popupRect.top;
-			dragHandle.setPointerCapture(event.pointerId);
-		});
+			const topmostPopupRoot = getTopmostPopupRoot();
 
-		dragHandle.addEventListener('pointermove', event => {
-			if (event.pointerId !== activePointerId) {
+			if (!topmostPopupRoot) {
 				return;
 			}
 
-			clampPosition(
-				event.clientX - dragOffsetX,
-				event.clientY - dragOffsetY,
-			);
+			popupClosers.get(topmostPopupRoot)?.();
 		});
-
-		const endDrag = (event: PointerEvent) => {
-			if (event.pointerId !== activePointerId) {
-				return;
-			}
-
-			if (dragHandle.hasPointerCapture(event.pointerId)) {
-				dragHandle.releasePointerCapture(event.pointerId);
-			}
-
-			activePointerId = null;
-		};
-
-		dragHandle.addEventListener('pointerup', endDrag);
-		dragHandle.addEventListener('pointercancel', endDrag);
 
 		window.addEventListener('resize', () => {
-			if (!popupRoot.hidden) {
+			for (const popup of popupPortal.querySelectorAll<HTMLElement>(
+				'[data-team-popup]',
+			)) {
 				const popupRect = popup.getBoundingClientRect();
-				clampPosition(popupRect.left, popupRect.top);
+				clampPosition(popup, popupRect.left, popupRect.top);
 			}
 		});
 	}
