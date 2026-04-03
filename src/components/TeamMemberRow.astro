@@ -1,41 +1,70 @@
 ---
-import type { TeamSchool } from "../data/team";
+import type { TeamMemberGame, TeamMemberLink, TeamSchool } from "../data/team";
 
 interface Props {
+  bio: string;
   displayName: string;
+  games: TeamMemberGame[];
+  grad: number;
+  links: TeamMemberLink[];
+  name: string;
   school: TeamSchool;
   role: string;
 }
 
 const {
+  bio,
   displayName,
+  games,
+  grad,
+  links,
+  name,
   school,
   role
 } = Astro.props;
 
-const schoolLabelClass = "m-0 self-start text-sm leading-normal font-semibold";
+const triggerPayload = JSON.stringify({
+  bio,
+  games,
+  grad,
+  isEBoard: role.toUpperCase() === "E-BOARD",
+  links,
+  name,
+  school
+});
+
+const schoolLabelClass = "self-start text-sm leading-normal font-semibold";
 const brownClass = "text-[#d3c1bb]";
 const risdClass = "text-[#dfddff]";
 ---
 
-<li
-  class="flex w-full items-end gap-3 max-[900px]:items-start max-[900px]:justify-between"
->
-  <div class="flex min-w-0 items-start gap-3">
-    <p class="m-0 min-w-0 text-[20px] leading-normal max-[720px]:text-lg">{displayName}</p>
-    {
-      school === "BROWN|RISD" ? (
-        <p class={schoolLabelClass}><span class={brownClass}>BROWN</span><span class="text-white">|</span><span class={risdClass}>RISD</span></p>
-      ) : (
-        <p class:list={[schoolLabelClass, school === "RISD" ? risdClass : brownClass]}>
-          {school}
-        </p>
-      )
-    }
-  </div>
-  <span
-    class="dot-leader-column min-w-0 flex-1 self-end overflow-hidden text-white/90"
-    aria-hidden="true"
-  ></span>
-  <p class="m-0 shrink-0 self-start text-[20px] leading-normal max-[720px]:text-lg max-[900px]:pl-3">{role}</p>
+<li class="w-full">
+  <button
+    type="button"
+    class="flex w-full cursor-pointer items-end gap-3 border-0 bg-transparent p-0 text-left text-white hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 max-[900px]:items-start max-[900px]:justify-between"
+    data-team-member-trigger
+    data-team-member={triggerPayload}
+  >
+    <span class="flex min-w-0 items-start gap-3">
+      <span class="min-w-0 text-[20px] leading-normal max-[720px]:text-lg">
+        {displayName}
+      </span>
+      {
+        school === "BROWN|RISD" ? (
+          <span class={schoolLabelClass}><span class={brownClass}>BROWN</span><span class="text-white">|</span><span class={risdClass}>RISD</span></span>
+        ) : (
+          <span class:list={[schoolLabelClass, school === "RISD" ? risdClass : brownClass]}>
+            {school}
+          </span>
+        )
+      }
+    </span>
+    <span
+      class="dot-leader-column min-w-0 flex-1 self-end overflow-hidden text-white/90"
+      aria-hidden="true"
+    ></span>
+    <span class="shrink-0 self-start text-[20px] leading-normal max-[720px]:text-lg max-[900px]:pl-3">
+      {role}
+    </span>
+  </button>
 </li>

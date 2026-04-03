@@ -1,6 +1,7 @@
 ---
 import { ChevronDown } from "@lucide/astro";
 import SiteNav from "../components/SiteNav.astro";
+import TeamMemberProfilePopup from "../components/TeamMemberProfilePopup.astro";
 import TeamMemberRow from "../components/TeamMemberRow.astro";
 import { alumniClasses, currentMembers } from "../data/team";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -40,7 +41,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </section>
 
       <section class="flex flex-col gap-10" aria-label="Team roster">
-        <details class="group w-full border border-white" data-node-id="18:1828">
+        <details class="group w-full border border-white" data-node-id="18:1828" open>
           <summary
             class="flex cursor-pointer list-none items-center justify-between gap-6 px-4 py-4 pr-6 text-2xl leading-normal [&::-webkit-details-marker]:hidden max-[720px]:text-xl"
             data-node-id="18:1829"
@@ -100,5 +101,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         )}
       </section>
     </div>
+
+    <TeamMemberProfilePopup />
   </main>
 </BaseLayout>

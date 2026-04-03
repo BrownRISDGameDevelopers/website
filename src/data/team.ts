@@ -1,15 +1,30 @@
 export type TeamSchool = "RISD" | "BROWN" | "BROWN|RISD";
 
+export interface TeamMemberGame {
+  role: string;
+  title: string;
+}
+
+export interface TeamMemberLink {
+  label: string;
+  url: string;
+}
+
 interface MemberFrontmatter {
   grad: number;
+  games?: TeamMemberGame[] | null;
+  links?: TeamMemberLink[] | null;
   name: string;
   roles?: string | string[];
   school: string;
 }
 
 export interface TeamMember {
+  bio: string;
   displayName: string;
+  games: TeamMemberGame[];
   grad: number;
+  links: TeamMemberLink[];
   name: string;
   role: string;
   school: TeamSchool;
@@ -24,6 +39,12 @@ export interface AlumniClass {
 const memberModules = import.meta.glob("../content/members/**/*.md", {
   eager: true
 }) as Record<string, { frontmatter: MemberFrontmatter }>;
+
+const rawMemberModules = import.meta.glob("../content/members/**/*.md", {
+  eager: true,
+  import: "default",
+  query: "?raw"
+}) as Record<string, string>;
 
 const currentDateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "numeric",
@@ -72,16 +93,51 @@ const normalizeRole = (roles?: string | string[]) => {
   return roles ?? "Member";
 };
 
+const normalizeGames = (games?: TeamMemberGame[] | null) =>
+  Array.isArray(games)
+    ? games.filter(
+        (game): game is TeamMemberGame =>
+          typeof game?.title === "string" &&
+          game.title.length > 0 &&
+          typeof game.role === "string" &&
+          game.role.length > 0
+      )
+    : [];
+
+const normalizeLinks = (links?: TeamMemberLink[] | null) =>
+  Array.isArray(links)
+    ? links.filter(
+        (link): link is TeamMemberLink =>
+          typeof link?.label === "string" &&
+          link.label.length > 0 &&
+          typeof link.url === "string" &&
+          link.url.length > 0
+      )
+    : [];
+
+const extractMemberBio = (rawContent: string) => {
+  const body = rawContent.replace(/^---[\s\S]*?---\s*/, "").trim();
+
+  if (!body || body === "Bio.") {
+    return "Bio coming soon.";
+  }
+
+  return body;
+};
+
 const formatDisplayName = (name: string, grad: number) =>
   `${name.toLocaleUpperCase("en-US")} ‘${String(grad).slice(-2)}`;
 
 const sortMembers = (left: TeamMember, right: TeamMember) =>
   left.grad - right.grad || left.name.localeCompare(right.name);
 
-const allMembers = Object.values(memberModules)
-  .map(({ frontmatter }) => ({
+const allMembers = Object.entries(memberModules)
+  .map(([path, { frontmatter }]) => ({
+    bio: extractMemberBio(rawMemberModules[path] ?? ""),
     displayName: formatDisplayName(frontmatter.name, frontmatter.grad),
+    games: normalizeGames(frontmatter.games),
     grad: frontmatter.grad,
+    links: normalizeLinks(frontmatter.links),
     name: frontmatter.name,
     role: normalizeRole(frontmatter.roles),
     school: normalizeSchool(frontmatter.school)
