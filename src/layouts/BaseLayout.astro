@@ -1,48 +1,55 @@
 ---
-import "../styles/global.css";
+import '../styles/global.css';
 
 interface Props {
-  title?: string;
-  description?: string;
+	title?: string;
+	description?: string;
 }
 
 const {
-  title = "Brown RISD Game Developers",
-  description = "Brown RISD Game Developers club website."
+	title = 'Brown RISD Game Developers',
+	description = 'Brown RISD Game Developers club website.',
 } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <meta name="theme-color" content="#181a2e" />
-    <link rel="icon" type="image/png" href="/assets/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap"
-    />
-    <title>{title}</title>
-  </head>
-  <body class="relative min-h-screen bg-page-background font-mono text-white antialiased">
-    <div class="pointer-events-none fixed inset-0 z-0 flex items-end justify-center overflow-hidden" aria-hidden="true">
-      <img
-        class="block h-full w-full max-w-none object-cover object-center object-bottom"
-        src="/assets/site-background-2.png"
-        alt=""
-        width="2999"
-        height="1693"
-        draggable="false"
-        loading="eager"
-      />
-    </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#181a2e" />
+		<link rel="icon" type="image/png" href="/assets/favicon.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap"
+		/>
+		<title>{title}</title>
+	</head>
+	<body
+		class="relative min-h-screen bg-page-background font-mono text-white antialiased"
+	>
+		<div
+			class="pointer-events-none fixed inset-0 z-0 flex items-end justify-center overflow-hidden"
+			aria-hidden="true"
+		>
+			<img
+				class="block h-full w-full max-w-none object-cover object-center object-bottom"
+				src="/assets/site-background.png"
+				alt=""
+				width="2999"
+				height="1693"
+				draggable="false"
+				loading="eager"
+			/>
+		</div>
 
-    <div class="relative z-10 flex min-h-screen items-start justify-center max-[1180px]:block">
-      <slot />
-    </div>
-  </body>
+		<div
+			class="relative z-10 flex min-h-screen items-start justify-center max-[1180px]:block"
+		>
+			<slot />
+		</div>
+	</body>
 </html>

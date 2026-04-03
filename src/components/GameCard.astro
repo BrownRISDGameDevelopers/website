@@ -1,5 +1,6 @@
 ---
 interface Props {
+  title: string;
   image: string;
   imageAlt: string;
   season: string;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const {
+  title,
   image,
   imageAlt,
   season,
@@ -14,21 +16,32 @@ const {
 } = Astro.props;
 
 const ctaClass =
-  "relative z-0 inline-flex h-[58px] w-40 items-center justify-center border border-white bg-transparent text-xl/[26px] font-normal uppercase after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:translate-x-[6px] after:translate-y-[6px] after:border after:border-white/33 after:bg-transparent after:[clip-path:polygon(100%_0,_100%_100%,_0_100%,_0_calc(100%_-_6px),_calc(100%_-_6px)_calc(100%_-_6px),_calc(100%_-_6px)_0)] max-[720px]:w-full";
+  "pointer-events-auto relative z-0 inline-flex h-13 w-36 items-center justify-center border border-white bg-transparent text-lg/[24px] font-normal uppercase after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:translate-x-[6px] after:translate-y-[6px] after:border after:border-white/33 after:bg-transparent after:[clip-path:polygon(100%_0,_100%_100%,_0_100%,_0_calc(100%_-_6px),_calc(100%_-_6px)_calc(100%_-_6px),_calc(100%_-_6px)_0)] max-[720px]:w-full";
 ---
 
-<article class="flex h-[458px] w-[391px] flex-none flex-col border border-white bg-transparent max-[720px]:h-auto max-[720px]:w-[min(391px,82vw)]">
-  <div class="h-[220px] overflow-hidden max-[720px]:h-auto max-[720px]:aspect-[391/220]">
-    <img class="block h-full w-full object-cover" src={image} alt={imageAlt} width="391" height="220" draggable="false" loading="eager" />
+<article class="flex min-h-[440px] w-[315px] flex-none flex-col border border-white bg-transparent max-[720px]:min-h-0 max-[720px]:w-[min(315px,78vw)]">
+  <div class="aspect-[63/50] overflow-hidden">
+    <img class="block h-full w-full object-cover" src={image} alt={imageAlt} width="315" height="250" draggable="false" loading="eager" />
   </div>
 
-  <div class="grid flex-1 grid-cols-[minmax(0,1fr)_auto] content-start items-start gap-8 border-t border-white p-8 max-[720px]:p-6">
-    <h2 class="m-0 text-[28px] font-medium uppercase [text-box:trim-start_cap] max-[720px]:text-2xl max-[720px]:leading-[1.1]">
-      PICKLEBALL VIOLENCE
-    </h2>
+  <div class="flex flex-1 flex-col gap-6 border-t border-white p-6 max-[720px]:p-5">
+    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+      <h2 class="m-0 min-h-[57.6px] text-[24px]/[1.2] font-medium uppercase line-clamp-2">
+        {title}
+      </h2>
 
-    <p class="m-0 whitespace-nowrap text-base font-medium [text-box:trim-start_cap]">{season}</p>
+      <p class="m-0 whitespace-nowrap text-sm font-medium uppercase">
+        {season}
+      </p>
+    </div>
 
-    <a class={ctaClass} href={href}>PLAY NOW</a>
+    <a
+      class={`${ctaClass} mt-auto self-start`}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      PLAY NOW
+    </a>
   </div>
 </article>

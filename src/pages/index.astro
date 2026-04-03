@@ -4,6 +4,7 @@ import SiteNav from "../components/SiteNav.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const cards = Array.from({ length: 4 }, () => ({
+  title: "Pickleball Violence",
   image: "/assets/pickleball-violence.png",
   imageAlt: "Pickleball Violence game artwork",
   season: "FALL 2025",
@@ -40,7 +41,7 @@ const cards = Array.from({ length: 4 }, () => ({
         </p>
       </section>
 
-      <GamesMarquee cards={cards} />
+      <GamesMarquee cards={cards} apiEndpoint="/api/itch-games" />
     </div>
   </main>
 </BaseLayout>

@@ -2,6 +2,7 @@
 import GameCard from "./GameCard.astro";
 
 interface Card {
+  title: string;
   image: string;
   imageAlt: string;
   season: string;
@@ -10,9 +11,10 @@ interface Card {
 
 interface Props {
   cards: Card[];
+  apiEndpoint?: string;
 }
 
-const { cards } = Astro.props;
+const { cards, apiEndpoint = "/api/itch-games" } = Astro.props;
 const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 ---
 
@@ -22,6 +24,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
   aria-label="Featured games"
   data-node-id="5:3132"
   data-games-marquee
+  data-games-api={apiEndpoint}
 >
   <div class="overflow-hidden">
     <div
@@ -37,16 +40,46 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
       </div>
     </div>
   </div>
+
+  <template data-games-card-template>
+    <div data-games-card>
+      <GameCard
+        title="Template title"
+        image="/assets/pickleball-violence.png"
+        imageAlt=""
+        season="FALL 2025"
+        href="#"
+      />
+    </div>
+  </template>
 </section>
 
 <script>
+  type ClientCard = {
+    title: string;
+    image: string;
+    imageAlt: string;
+    season: string;
+    href?: string;
+  };
+
   const marquees = document.querySelectorAll("[data-games-marquee]");
 
   for (const marquee of marquees) {
+    if (!(marquee instanceof HTMLElement)) {
+      continue;
+    }
+
     const viewport = marquee.querySelector("[data-games-viewport]");
     const track = marquee.querySelector("[data-games-track]");
+    const cardTemplate = marquee.querySelector("[data-games-card-template]");
+    const apiEndpoint = marquee.dataset.gamesApi;
 
-    if (!(viewport instanceof HTMLElement) || !(track instanceof HTMLElement)) {
+    if (
+      !(viewport instanceof HTMLElement) ||
+      !(track instanceof HTMLElement) ||
+      !(cardTemplate instanceof HTMLTemplateElement)
+    ) {
       continue;
     }
 
@@ -63,6 +96,84 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     const autoSpeed = 44;
 
     viewport.dataset.dragging = "false";
+
+    const normalizeCards = (cards: ClientCard[]) => (cards.length > 1 ? [...cards, ...cards] : cards);
+
+    const buildCard = (card: ClientCard) => {
+      const fragment = cardTemplate.content.cloneNode(true);
+
+      if (!(fragment instanceof DocumentFragment)) {
+        return null;
+      }
+
+      const cardRoot = fragment.querySelector("[data-games-card]");
+      const image = fragment.querySelector("img");
+      const title = fragment.querySelector("h2");
+      const season = fragment.querySelector("p");
+      const link = fragment.querySelector("a");
+
+      if (
+        !(cardRoot instanceof HTMLElement) ||
+        !(image instanceof HTMLImageElement) ||
+        !(title instanceof HTMLElement) ||
+        !(season instanceof HTMLElement) ||
+        !(link instanceof HTMLAnchorElement)
+      ) {
+        return null;
+      }
+
+      image.src = card.image;
+      image.alt = card.imageAlt;
+      title.textContent = card.title;
+      season.textContent = card.season;
+      link.href = card.href ?? "#";
+
+      return cardRoot;
+    };
+
+    const renderCards = (cards: ClientCard[]) => {
+      const renderedCards = normalizeCards(cards)
+        .map((card) => buildCard(card))
+        .filter((card) => card instanceof HTMLElement);
+
+      if (renderedCards.length === 0) {
+        return;
+      }
+
+      track.replaceChildren(...renderedCards);
+      track.dataset.gamesCount = String(cards.length);
+      viewport.scrollLeft = 0;
+      measureCycle();
+      wrapScroll();
+    };
+
+    const loadCards = async () => {
+      if (!apiEndpoint) {
+        return;
+      }
+
+      try {
+        const response = await fetch(apiEndpoint, {
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = (await response.json()) as { games?: ClientCard[] };
+
+        if (!Array.isArray(data.games) || data.games.length === 0) {
+          return;
+        }
+
+        renderCards(data.games);
+      } catch (error) {
+        console.error("Failed to load itch games", error);
+      }
+    };
 
     const measureCycle = () => {
       const count = Number.parseInt(track.dataset.gamesCount ?? "0", 10);
@@ -150,6 +261,13 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
         return;
       }
 
+      if (
+        event.target instanceof Element &&
+        event.target.closest("a, button, input, textarea, select, label, summary")
+      ) {
+        return;
+      }
+
       isDragging = true;
       velocity = 0;
       activePointerId = event.pointerId;
@@ -211,6 +329,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     resizeObserver.observe(track);
     measureCycle();
     wrapScroll();
+    void loadCards();
     window.requestAnimationFrame(animate);
   }
 </script>
