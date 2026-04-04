@@ -6,5 +6,3 @@ roles: E-Board
 games:
 links:
 ---
-
-Bio.

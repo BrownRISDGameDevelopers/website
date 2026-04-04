@@ -296,6 +296,7 @@ import { X } from '@lucide/astro';
 				member.isEBoard,
 			);
 			bioElement.textContent = member.bio;
+			bioElement.hidden = member.bio.length === 0;
 			popup.setAttribute('aria-labelledby', nameId);
 			popup.removeAttribute('aria-label');
 			renderGames(member, gamesElement);

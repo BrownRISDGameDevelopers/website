@@ -2,13 +2,13 @@
 const discordIcon = "https://cdn.simpleicons.org/discord/white";
 const instagramIcon = "https://cdn.simpleicons.org/instagram/white";
 const primaryLinks = [
-  { href: "https://brownrisdgames.itch.io/", label: "GAMES" },
-  { href: "https://brgd.bandcamp.com/", label: "SOUNDTRACKS" }
+  { href: "https://brownrisdgames.itch.io/", label: "GAMES", external: true },
+  { href: "https://brgd.bandcamp.com/", label: "SOUNDTRACKS", external: true }
 ];
 const secondaryLinks = [
   { href: "https://docs.brownrisd.games/", label: "CLUB DOCUMENTATION", mobileLabel: "DOCS", tabletLabel: "DOCS" },
   { href: "/team", label: "TEAM" },
-  { href: "#join", label: "JOIN US!" }
+  { href: "https://docs.brownrisd.games/getting-started/join-us/", label: "JOIN US!" }
 ];
 const navLinksClass =
   "flex items-center gap-12 whitespace-nowrap text-base leading-[21px] font-medium max-[1180px]:gap-11 max-[900px]:gap-7 max-[900px]:text-sm max-[900px]:leading-5";
@@ -42,7 +42,13 @@ const socialLinkClass =
 
     <nav class={navLinksClass} aria-label="Primary">
       {primaryLinks.map((link) => (
-        <a href={link.href}>{link.label}</a>
+        <a
+          href={link.href}
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener noreferrer" : undefined}
+        >
+          {link.label}
+        </a>
       ))}
     </nav>
   </div>
@@ -107,7 +113,13 @@ const socialLinkClass =
     <div class="flex min-w-0 flex-col items-end gap-2 text-right text-sm leading-5 font-medium whitespace-nowrap">
       <nav class="flex items-center justify-end gap-5 max-[360px]:gap-3" aria-label="Primary mobile">
         {primaryLinks.map((link) => (
-          <a href={link.href}>{link.label}</a>
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener noreferrer" : undefined}
+          >
+            {link.label}
+          </a>
         ))}
       </nav>
 

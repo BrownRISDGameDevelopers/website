@@ -119,7 +119,7 @@ const extractMemberBio = (rawContent: string) => {
   const body = rawContent.replace(/^---[\s\S]*?---\s*/, "").trim();
 
   if (!body || body === "Bio.") {
-    return "Bio coming soon.";
+    return "";
   }
 
   return body;
