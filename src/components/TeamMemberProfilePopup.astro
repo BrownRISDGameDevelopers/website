@@ -183,7 +183,7 @@ import { X } from '@lucide/astro';
 				const anchor = document.createElement('a');
 				anchor.href = link.url;
 				anchor.target = '_blank';
-				anchor.rel = 'noopener noreferrer';
+				anchor.rel = 'noopener';
 				anchor.className =
 					'pointer-events-auto relative z-0 inline-flex items-center justify-center border border-white bg-transparent px-6 py-3 text-sm leading-normal uppercase after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:translate-x-[6px] after:translate-y-[6px] after:border after:border-white/33 after:bg-transparent after:[clip-path:polygon(100%_0,_100%_100%,_0_100%,_0_calc(100%_-_6px),_calc(100%_-_6px)_calc(100%_-_6px),_calc(100%_-_6px)_0)] max-[520px]:px-4 max-[520px]:py-2.5 max-[520px]:text-xs';
 				anchor.textContent = link.label;
