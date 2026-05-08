@@ -15,5 +15,6 @@ games:
 links:
   - label: GitHub
     url: https://github.com/brian-xu
-feed me weird things
 ---
+
+feed me weird things
