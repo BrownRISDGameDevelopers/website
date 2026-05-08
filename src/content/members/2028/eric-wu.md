@@ -4,6 +4,8 @@ school: Brown
 grad: 2028
 roles: E-Board
 games:
+  - title: Library of Alexandria
+    role: Programmer
   - title: Mosquito Simulator
     role: Producer
   - title: Suitor's Proposal
