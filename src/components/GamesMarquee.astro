@@ -28,7 +28,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 >
   <div class="overflow-hidden">
     <div
-      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 select-none touch-pan-y [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5 max-[720px]:cursor-default max-[720px]:overflow-x-hidden max-[720px]:pl-5"
+      class="w-full cursor-grab overflow-x-auto overflow-y-hidden pl-16 select-none touch-pan-y [scrollbar-gutter:stable] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden data-[dragging=true]:cursor-grabbing max-[1180px]:pl-5 max-[720px]:cursor-default max-[720px]:touch-pan-x max-[720px]:overscroll-x-none max-[720px]:pl-5"
       data-games-viewport
     >
       <div class="flex w-max gap-6 max-[720px]:gap-4" data-games-track data-games-count={cards.length}>
@@ -225,21 +225,10 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     };
 
     const applyMobileAnimation = () => {
-      if (!usesMobileAnimation() || cycleDistance <= 0) {
-        track.dataset.mobileAnimated = "false";
-        track.style.removeProperty("--marquee-cycle");
-        track.style.removeProperty("--marquee-duration");
-        track.style.transform = "";
-        return;
-      }
-
-      track.dataset.mobileAnimated = "true";
-      track.style.setProperty("--marquee-cycle", `${cycleDistance}px`);
-      track.style.setProperty(
-        "--marquee-duration",
-        `${Math.max(cycleDistance / autoSpeed, 12).toFixed(2)}s`
-      );
-      viewport.scrollLeft = 0;
+      track.dataset.mobileAnimated = "false";
+      track.style.removeProperty("--marquee-cycle");
+      track.style.removeProperty("--marquee-duration");
+      track.style.transform = "";
     };
 
     const wrapScroll = () => {
@@ -263,11 +252,6 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
       const deltaSeconds = (timestamp - lastFrame) / 1000;
       lastFrame = timestamp;
-
-      if (usesMobileAnimation()) {
-        window.requestAnimationFrame(animate);
-        return;
-      }
 
       if (!isDragging) {
         if (!isHovering && cycleDistance > 0) {
