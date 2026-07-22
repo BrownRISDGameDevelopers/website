@@ -340,12 +340,16 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
       event.preventDefault();
     });
 
-    viewport.addEventListener("pointerenter", () => {
-      isHovering = true;
+    viewport.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse") {
+        isHovering = true;
+      }
     });
 
-    viewport.addEventListener("pointerleave", () => {
-      isHovering = false;
+    viewport.addEventListener("pointerleave", (event) => {
+      if (event.pointerType === "mouse") {
+        isHovering = false;
+      }
     });
 
     viewport.addEventListener("pointerup", endDrag);
