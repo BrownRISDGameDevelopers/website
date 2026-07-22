@@ -1,4 +1,6 @@
 ---
+import { Menu, X } from '@lucide/astro';
+
 const discordIcon = 'https://cdn.simpleicons.org/discord/white';
 const instagramIcon = 'https://cdn.simpleicons.org/instagram/white';
 const linkedinIcon = '/assets/linkedin.svg';
@@ -143,7 +145,7 @@ const socialLinkClass =
 </header>
 
 <header
-	class="relative hidden w-full items-end justify-between gap-4 max-[720px]:flex"
+	class="relative z-50 hidden w-full items-center justify-between gap-4 max-[720px]:flex"
 	aria-label="Mobile navigation"
 >
 	<a
@@ -162,91 +164,218 @@ const socialLinkClass =
 		/>
 	</a>
 
-	<div class="ml-auto flex min-w-0 items-end gap-5">
-		<div
-			class="flex min-w-0 flex-col items-end gap-2 text-right text-sm leading-5 font-medium whitespace-nowrap"
+	<div class="ml-auto flex items-center gap-5">
+		<a
+			class="flex size-6 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+			href={discordUrl}
+			aria-label="Discord"
 		>
-			<nav
-				class="flex items-center justify-end gap-5 max-[360px]:gap-3"
-				aria-label="Primary mobile"
-			>
-				{
-					primaryLinks.map(link => (
-						<a
-							href={link.href}
-							target={link.external ? '_blank' : undefined}
-							rel={
-								link.external
-									? 'noopener'
-									: undefined
-							}
-						>
-							{link.label}
-						</a>
-					))
-				}
-			</nav>
+			<img
+				class="block size-full max-w-none object-contain"
+				src={discordIcon}
+				alt=""
+				width="24"
+				height="24"
+				draggable="false"
+				loading="eager"
+			/>
+		</a>
 
-			<nav
-				class="flex items-center justify-end gap-4 max-[360px]:gap-3"
-				aria-label="Secondary mobile"
+		<button
+			type="button"
+			class="flex size-11 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+			aria-label="Open navigation menu"
+			aria-controls="mobile-nav-panel"
+			aria-expanded="false"
+			data-mobile-nav-open
+		>
+			<Menu class="size-6" aria-hidden="true" stroke-width={1.75} />
+		</button>
+	</div>
+</header>
+
+<dialog
+	id="mobile-nav-panel"
+	class="m-0 h-[100dvh] max-h-none w-screen max-w-none translate-x-full border-0 bg-page-background p-0 text-white opacity-0 transition-[transform,opacity] duration-200 ease-out backdrop:bg-black/60 data-[open=true]:translate-x-0 data-[open=true]:opacity-100 motion-reduce:transition-none"
+	aria-label="Mobile navigation menu"
+	data-mobile-nav-panel
+>
+	<div class="flex min-h-full flex-col px-5 py-4">
+		<div class="flex h-14 items-center justify-between gap-5">
+			<a
+				class="flex h-14 w-12 flex-none items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+				href="/"
+				aria-label="Brown RISD Game Developers home"
 			>
-				{
-					secondaryLinks.map(link => (
-						<a href={link.href}>{link.mobileLabel ?? link.label}</a>
-					))
-				}
-			</nav>
+				<img
+					class="block h-14 w-12 object-cover"
+					src="/assets/brgd-logo-white.png"
+					alt="Brown RISD Game Developers logo"
+					width="48"
+					height="56"
+					draggable="false"
+					loading="eager"
+				/>
+			</a>
+
+			<div class="ml-auto flex items-center">
+				<button
+					type="button"
+					class="flex size-11 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+					aria-label="Close navigation menu"
+					data-mobile-nav-close
+				>
+					<X class="size-6" aria-hidden="true" stroke-width={1.75} />
+				</button>
+			</div>
 		</div>
 
-		<div class="flex flex-col items-center gap-4">
+		<nav
+			class="-mx-5 mt-6 flex flex-col border-t border-white text-xl font-medium uppercase"
+			aria-label="Mobile menu"
+		>
+			{
+				primaryLinks.map(link => (
+					<a
+						class="border-b border-white/50 px-5 py-4"
+						href={link.href}
+						target={link.external ? '_blank' : undefined}
+						rel={link.external ? 'noopener' : undefined}
+					>
+						{link.label}
+					</a>
+				))
+			}
+
+			{
+				secondaryLinks.map((link, index) => (
+					<a
+						class:list={[
+							'border-b px-5 py-4',
+							index === secondaryLinks.length - 1
+								? 'border-white'
+								: 'border-white/50',
+						]}
+						href={link.href}
+					>
+						{link.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="-mx-5 grid grid-cols-3 border-b border-white text-xs font-medium uppercase">
 			<a
-				class="flex size-4 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+				class="flex min-w-0 items-center justify-center gap-2 border-r border-white px-2 py-4"
 				href={discordUrl}
-				aria-label="Discord"
 			>
 				<img
-					class="block size-full max-w-none object-contain"
+					class="block size-5 max-w-none object-contain"
 					src={discordIcon}
 					alt=""
-					width="16"
-					height="16"
+					width="20"
+					height="20"
 					draggable="false"
 					loading="eager"
 				/>
+				<span>Discord</span>
 			</a>
 
 			<a
-				class="flex size-4 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+				class="flex min-w-0 items-center justify-center gap-2 border-r border-white px-2 py-4"
 				href="https://www.instagram.com/brownrisdgamedev/"
-				aria-label="Instagram"
 			>
 				<img
-					class="block size-full max-w-none object-contain"
+					class="block size-5 max-w-none object-contain"
 					src={instagramIcon}
 					alt=""
-					width="16"
-					height="16"
+					width="20"
+					height="20"
 					draggable="false"
 					loading="eager"
 				/>
+				<span>Instagram</span>
 			</a>
 
 			<a
-				class="flex size-4 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-page-background"
+				class="flex min-w-0 items-center justify-center gap-2 px-2 py-4"
 				href="https://www.linkedin.com/company/brown-risd-game-developers/"
-				aria-label="LinkedIn"
 			>
 				<img
-					class="block size-full max-w-none object-contain"
+					class="block size-5 max-w-none object-contain"
 					src={linkedinIcon}
 					alt=""
-					width="16"
-					height="16"
+					width="20"
+					height="20"
 					draggable="false"
 					loading="eager"
 				/>
+				<span>LinkedIn</span>
 			</a>
 		</div>
 	</div>
-</header>
+</dialog>
+
+<script>
+	const openButton = document.querySelector('[data-mobile-nav-open]');
+	const panel = document.querySelector('[data-mobile-nav-panel]');
+	const closeButton = panel?.querySelector('[data-mobile-nav-close]');
+
+	if (
+		openButton instanceof HTMLButtonElement &&
+		panel instanceof HTMLDialogElement &&
+		closeButton instanceof HTMLButtonElement
+	) {
+		let closeTimer: number | undefined;
+
+		const closePanel = () => {
+			panel.dataset.open = 'false';
+			window.clearTimeout(closeTimer);
+			closeTimer = window.setTimeout(() => {
+				if (panel.open) {
+					panel.close();
+				}
+			}, 200);
+		};
+
+		openButton.addEventListener('click', () => {
+			if (panel.open) {
+				return;
+			}
+
+			window.clearTimeout(closeTimer);
+			panel.showModal();
+			document.documentElement.style.overflow = 'hidden';
+			openButton.setAttribute('aria-expanded', 'true');
+
+			window.requestAnimationFrame(() => {
+				panel.dataset.open = 'true';
+				closeButton.focus();
+			});
+		});
+
+		closeButton.addEventListener('click', closePanel);
+
+		panel.addEventListener('cancel', event => {
+			event.preventDefault();
+			closePanel();
+		});
+
+		document.addEventListener('keydown', event => {
+			if (event.key === 'Escape' && panel.open) {
+				event.preventDefault();
+				closePanel();
+			}
+		});
+
+		panel.addEventListener('close', () => {
+			document.documentElement.style.removeProperty('overflow');
+			openButton.setAttribute('aria-expanded', 'false');
+			openButton.focus();
+		});
+
+		for (const link of panel.querySelectorAll('a')) {
+			link.addEventListener('click', closePanel);
+		}
+	}
+</script>
