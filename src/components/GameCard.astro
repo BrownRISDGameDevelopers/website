@@ -21,7 +21,7 @@ const ctaClass =
 
 <article class="flex min-h-[440px] w-[315px] flex-none flex-col border border-white bg-transparent max-[720px]:min-h-[408px] max-[720px]:w-[min(296px,80vw)] max-[420px]:min-h-[388px] max-[420px]:w-[min(264px,84vw)]">
   <div class="aspect-[63/50] overflow-hidden">
-    <img class="block h-full w-full object-cover" src={image} alt={imageAlt} width="315" height="250" draggable="false" loading="eager" />
+    <img class="block h-full w-full object-cover" src={image} alt={imageAlt} width="315" height="250" draggable="false" loading="lazy" decoding="async" />
   </div>
 
   <div class="flex flex-1 flex-col gap-6 border-t border-white p-6 max-[720px]:gap-4 max-[720px]:p-4">

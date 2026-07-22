@@ -37,8 +37,9 @@ interface MarqueeGame {
 
 const ITCH_GAMES_URL = 'https://itch.io/api/1/key/my-games';
 const FALLBACK_IMAGE = '/assets/pickleball-violence.png';
+const ITCH_COVER_PROXY = '/api/itch-cover';
 const CACHE_TTL_SECONDS = 60 * 60;
-const CACHE_VERSION = 'created-at-v7';
+const CACHE_VERSION = 'cover-proxy-v8';
 const MINIMUM_VIEWS_COUNT = 100;
 const ALLOWED_ITCH_USERNAMES = new Set(['brownrisdgames', 'brgd']);
 const cloudflareCaches = caches as CacheStorage & { default: Cache };
@@ -107,7 +108,9 @@ const formatAcademicSeason = (game: ItchApiGame) => {
 
 const normalizeGame = (game: ItchApiGame): MarqueeGame => ({
 	title: game.title,
-	image: game.cover_url ?? FALLBACK_IMAGE,
+	image: game.cover_url
+		? `${ITCH_COVER_PROXY}?url=${encodeURIComponent(game.cover_url)}`
+		: FALLBACK_IMAGE,
 	imageAlt: `${game.title} cover art`,
 	season: formatAcademicSeason(game),
 	href: game.url,
