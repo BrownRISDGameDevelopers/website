@@ -119,7 +119,11 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     let lastPointerTime = 0;
     let draggedDistance = 0;
     let suppressClick = false;
+    let isMobileTouchActive = false;
+    let didMobileTouchMove = false;
+    let mobileAutoResumeAt = 0;
     const autoSpeed = 44;
+    const mobileAutoScrollDelay = 2000;
 
     viewport.dataset.dragging = "false";
 
@@ -252,9 +256,12 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
       const deltaSeconds = (timestamp - lastFrame) / 1000;
       lastFrame = timestamp;
+      const isMobileAutoScrollPaused =
+        usesMobileAnimation() &&
+        (isMobileTouchActive || timestamp < mobileAutoResumeAt);
 
       if (!isDragging) {
-        if (!isHovering && cycleDistance > 0) {
+        if (!isHovering && !isMobileAutoScrollPaused && cycleDistance > 0) {
           viewport.scrollLeft += autoSpeed * deltaSeconds;
         }
 
@@ -354,7 +361,50 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
     viewport.addEventListener("pointerup", endDrag);
     viewport.addEventListener("pointercancel", endDrag);
-    viewport.addEventListener("scroll", wrapScroll, { passive: true });
+
+    viewport.addEventListener("touchstart", () => {
+      if (!usesMobileAnimation()) {
+        return;
+      }
+
+      isMobileTouchActive = true;
+      didMobileTouchMove = false;
+    }, { passive: true });
+
+    viewport.addEventListener("touchmove", () => {
+      if (!usesMobileAnimation()) {
+        return;
+      }
+
+      didMobileTouchMove = true;
+    }, { passive: true });
+
+    const endMobileTouch = () => {
+      if (!isMobileTouchActive) {
+        return;
+      }
+
+      isMobileTouchActive = false;
+      mobileAutoResumeAt = didMobileTouchMove
+        ? performance.now() + mobileAutoScrollDelay
+        : 0;
+      didMobileTouchMove = false;
+    };
+
+    viewport.addEventListener("touchend", endMobileTouch, { passive: true });
+    viewport.addEventListener("touchcancel", endMobileTouch, { passive: true });
+    viewport.addEventListener("scroll", () => {
+      const now = performance.now();
+
+      if (
+        usesMobileAnimation() &&
+        (isMobileTouchActive || now < mobileAutoResumeAt)
+      ) {
+        mobileAutoResumeAt = now + mobileAutoScrollDelay;
+      }
+
+      wrapScroll();
+    }, { passive: true });
 
     marquee.addEventListener(
       "click",
