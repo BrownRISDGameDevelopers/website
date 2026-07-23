@@ -196,8 +196,9 @@ const socialLinkClass =
 
 <dialog
 	id="mobile-nav-panel"
-	class="m-0 h-[100dvh] max-h-none w-screen max-w-none translate-x-full border-0 bg-page-background p-0 text-white opacity-0 transition-[transform,opacity] duration-200 ease-out backdrop:bg-black/60 data-[open=true]:translate-x-0 data-[open=true]:opacity-100 motion-reduce:transition-none"
+	class="m-0 h-[100dvh] max-h-none w-screen max-w-none translate-x-full border-0 bg-page-background p-0 text-white opacity-0 transition-[transform,opacity] duration-200 ease-out focus:outline-none backdrop:bg-black/60 data-[open=true]:translate-x-0 data-[open=true]:opacity-100 motion-reduce:transition-none"
 	aria-label="Mobile navigation menu"
+	tabindex="-1"
 	data-mobile-nav-panel
 >
 	<div class="flex min-h-full flex-col px-5 py-4">
@@ -350,7 +351,7 @@ const socialLinkClass =
 
 			window.requestAnimationFrame(() => {
 				panel.dataset.open = 'true';
-				closeButton.focus();
+				panel.focus({ preventScroll: true });
 			});
 		});
 
