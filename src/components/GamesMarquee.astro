@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { cards, apiEndpoint = "/api/itch-games" } = Astro.props;
-const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
+const marqueeCards = cards.length > 1 ? [...cards, ...cards, ...cards] : cards;
 ---
 
 <section
@@ -122,14 +122,16 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
     let isMobileTouchActive = false;
     let didMobileTouchMove = false;
     let mobileAutoResumeAt = 0;
+    let hasPositionedMobileTrack = false;
     const autoSpeed = 44;
-    const mobileAutoScrollDelay = 2000;
+    const mobileAutoScrollDelay = 800;
 
     viewport.dataset.dragging = "false";
 
     const usesMobileAnimation = () => window.matchMedia("(max-width: 720px)").matches;
 
-    const normalizeCards = (cards: ClientCard[]) => (cards.length > 1 ? [...cards, ...cards] : cards);
+    const normalizeCards = (cards: ClientCard[]) =>
+      cards.length > 1 ? [...cards, ...cards, ...cards] : cards;
 
     const buildCard = (card: ClientCard) => {
       const fragment = cardTemplate.content.cloneNode(true);
@@ -174,6 +176,7 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
       track.replaceChildren(...renderedCards);
       track.dataset.gamesCount = String(cards.length);
+      hasPositionedMobileTrack = false;
       viewport.scrollLeft = 0;
       measureCycle();
       wrapScroll();
@@ -225,6 +228,12 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
       }
 
       cycleDistance = repeatedCard.offsetLeft - firstCard.offsetLeft;
+
+      if (usesMobileAnimation() && !hasPositionedMobileTrack) {
+        viewport.scrollLeft = cycleDistance;
+        hasPositionedMobileTrack = true;
+      }
+
       applyMobileAnimation();
     };
 
@@ -237,6 +246,25 @@ const marqueeCards = cards.length > 1 ? [...cards, ...cards] : cards;
 
     const wrapScroll = () => {
       if (cycleDistance <= 0) {
+        return;
+      }
+
+      if (usesMobileAnimation()) {
+        if (
+          isMobileTouchActive ||
+          performance.now() < mobileAutoResumeAt
+        ) {
+          return;
+        }
+
+        while (viewport.scrollLeft >= cycleDistance * 2) {
+          viewport.scrollLeft -= cycleDistance;
+        }
+
+        while (viewport.scrollLeft < cycleDistance) {
+          viewport.scrollLeft += cycleDistance;
+        }
+
         return;
       }
 
