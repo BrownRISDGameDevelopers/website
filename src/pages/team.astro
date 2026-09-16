@@ -3,7 +3,7 @@ import { ChevronDown } from '@lucide/astro';
 import SiteNav from '../components/SiteNav.astro';
 import TeamMemberProfilePopup from '../components/TeamMemberProfilePopup.astro';
 import TeamMemberRow from '../components/TeamMemberRow.astro';
-import { alumniClasses, currentMembers } from '../data/team';
+import { alumniClasses, memberClasses, currentAcademicYear, currentMembers } from '../data/team';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -46,6 +46,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			<section
 				class="flex flex-col gap-10 max-[720px]:gap-8"
 				aria-label="Team roster"
+				data-team-roster
 			>
 				<details
 					class="group w-full border border-white"
@@ -68,6 +69,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					<ul
 						class="m-0 flex list-none flex-col gap-1 overflow-x-hidden border-t border-white p-4 max-[720px]:gap-3 max-[720px]:p-3"
 						data-node-id="18:1103"
+						data-current-members
 					>
 						{
 							currentMembers.map(member => (
@@ -78,8 +80,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				</details>
 
 				{
-					alumniClasses.length > 0 && (
-						<div class="flex flex-col gap-10 max-[720px]:gap-8">
+						<div class="flex flex-col gap-10 max-[720px]:gap-8" data-alumni-section hidden={alumniClasses.length === 0}>
 							<h2 class="m-0 text-4xl font-bold uppercase leading-[1.3] max-[720px]:text-[28px]">
 								ALUMNI
 							</h2>
@@ -88,11 +89,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								class="w-full border border-white"
 								data-node-id="19:2083"
 							>
-								{alumniClasses.map((alumniClass, index) => (
+								{memberClasses.map((alumniClass, index) => (
 									<details
+										data-alumni-year={alumniClass.year}
+										hidden={alumniClass.year >= currentAcademicYear}
 										class:list={[
 											'group w-full',
-											index < alumniClasses.length - 1 &&
+											index < memberClasses.length - 1 &&
 												'border-b border-white',
 										]}
 									>
@@ -107,7 +110,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 										</summary>
 
 										<ul class="m-0 flex list-none flex-col gap-1 border-t border-white p-4 max-[720px]:gap-3 max-[720px]:p-3">
-											{alumniClass.members.map(member => (
+												{alumniClass.members.filter(member => member.grad < currentAcademicYear).map(member => (
 												<TeamMemberRow {...member} />
 											))}
 										</ul>
@@ -115,7 +118,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								))}
 							</div>
 						</div>
-					)
 				}
 			</section>
 		</div>
@@ -123,3 +125,50 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		<TeamMemberProfilePopup />
 	</main>
 </BaseLayout>
+
+<style>
+	[data-team-roster] [hidden] { display: none !important; }
+</style>
+
+<script>
+	import { getAcademicYear, getNextRollover } from '../data/academic-year';
+
+	const roster = document.querySelector('[data-team-roster]');
+	const currentList = roster?.querySelector('[data-current-members]');
+	const alumniSection = roster?.querySelector('[data-alumni-section]');
+	if (roster && currentList && alumniSection instanceof HTMLElement) {
+		const rows = Array.from(roster.querySelectorAll<HTMLElement>('[data-member-grad]'))
+			.sort((a, b) => Number(a.dataset.memberGrad) - Number(b.dataset.memberGrad) ||
+				(a.dataset.memberName ?? '').localeCompare(b.dataset.memberName ?? ''));
+		const groups = Array.from(roster.querySelectorAll<HTMLDetailsElement>('[data-alumni-year]'));
+		let renderedYear: number | undefined;
+		let timer: number;
+
+		const refreshRoster = () => {
+			window.clearTimeout(timer);
+			const now = new Date();
+			const year = getAcademicYear(now);
+			if (year !== renderedYear) {
+				for (const row of rows) {
+					const grad = Number(row.dataset.memberGrad);
+					const target = grad >= year ? currentList :
+						groups.find(group => Number(group.dataset.alumniYear) === grad)?.querySelector('ul');
+					target?.append(row);
+				}
+				for (const group of groups) {
+					group.hidden = Number(group.dataset.alumniYear) >= year;
+				}
+				alumniSection.hidden = !groups.some(group => !group.hidden);
+				renderedYear = year;
+			}
+			// Cap long timers; background tabs also catch up when made visible.
+			timer = window.setTimeout(refreshRoster, Math.min(86400000, Math.max(1, getNextRollover(now) - now.getTime())));
+		};
+
+		refreshRoster();
+		window.addEventListener('pageshow', refreshRoster);
+		document.addEventListener('visibilitychange', () => {
+			if (!document.hidden) refreshRoster();
+		});
+	}
+</script>

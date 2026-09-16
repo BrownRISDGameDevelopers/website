@@ -1,3 +1,5 @@
+import { getAcademicYear } from './academic-year';
+
 export type TeamSchool = "RISD" | "BROWN" | "BROWN|RISD";
 
 export interface TeamMemberGame {
@@ -46,28 +48,9 @@ const rawMemberModules = import.meta.glob("../content/members/**/*.md", {
   query: "?raw"
 }) as Record<string, string>;
 
-const currentDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "numeric",
-  timeZone: "America/New_York",
-  year: "numeric"
-});
-
-const currentDateParts = currentDateFormatter
-  .formatToParts(new Date())
-  .reduce<Record<string, string>>((parts, part) => {
-    if (part.type !== "literal") {
-      parts[part.type] = part.value;
-    }
-
-    return parts;
-  }, {});
-
-const currentYear = Number.parseInt(currentDateParts.year ?? "0", 10);
-const currentMonth = Number.parseInt(currentDateParts.month ?? "1", 10);
-
 // The Brown/RISD academic year turns over in September, so seniors remain
 // current members through the summer after their graduation year.
-const currentAcademicYear = currentMonth >= 9 ? currentYear + 1 : currentYear;
+export const currentAcademicYear = getAcademicYear();
 
 const normalizeSchool = (school: string): TeamSchool => {
   const normalized = school
@@ -149,9 +132,8 @@ export const currentMembers = allMembers.filter(
   (member) => member.grad >= currentAcademicYear
 );
 
-export const alumniClasses = Object.values(
+export const memberClasses = Object.values(
   allMembers
-    .filter((member) => member.grad < currentAcademicYear)
     .reduce<Record<number, AlumniClass>>((classes, member) => {
       classes[member.grad] ??= {
         label: `CLASS OF ${member.grad}`,
@@ -167,3 +149,5 @@ export const alumniClasses = Object.values(
     members: [...alumniClass.members].sort(sortMembers)
   }))
   .sort((left, right) => right.year - left.year);
+
+export const alumniClasses = memberClasses.filter(group => group.year < currentAcademicYear);
