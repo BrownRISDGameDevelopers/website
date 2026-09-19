@@ -12,9 +12,9 @@ games:
     role: Producer
   - title: Switchboard Operator
     role: Producer
- - title: Dance Detective
+  - title: Dance Detective
     role: Artist
- - title: Nightmare on Waterman Street
+  - title: Nightmare on Waterman Street
     role: Artist
 links:
   - label: Portfolio
